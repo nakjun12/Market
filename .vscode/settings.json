@@ -1,0 +1,18 @@
+{
+  "editor.formatOnSave": true, // 저장 시 자동 포맷팅을 켭니다.
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // Prettier를 기본 포맷터로 지정합니다.
+
+  //파일 경로 이동 자동 업데이트 js,jsx
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  // 파일을 저장할 때 라인 끝의 불필요한 공백을 자동으로 제거합니다.
+  "files.trimTrailingWhitespace": true,
+  // 에디터에서 지정된 열(여기서는 120열)에 눈금선을 표시합니다. 코드 길이 제한을 시각적으로 나타냅니다.
+  "editor.rulers": [150],
+
+  // ESLint가 검증할 언어나 프레임워크를 나열합니다. javascript, javascriptreact가 포함됩니다.
+  "eslint.validate": ["javascript", "javascriptreact"],
+
+  "editor.codeActionsOnSave": {
+    "source.organizeImport": "explicit"
+  }
+}
