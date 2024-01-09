@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* 기본 마진과 패딩 제거 */
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  ul,
+  li {
+    @apply m-0 p-0;
+  }
+
+  /* 링크 스타일 제거 및 상속 */
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  /* 바디 스타일 */
+  body {
+    @apply bg-red-100 font-sans text-gray-900;
+  }
+
+  /* 모든 박스에 border-box 적용 */
+  *,
+  *::before,
+  *::after {
+    @apply box-border;
+  }
+
+  /* 버튼과 입력 필드의 기본 스타일 제거 */
+  button,
+  input,
+  select,
+  textarea {
+    @apply bg-transparent border-0;
+  }
+
+  /* 리스트 스타일 제거 */
+  ol,
+  ul {
+    @apply list-none;
+  }
+}
