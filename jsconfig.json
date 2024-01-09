@@ -1,0 +1,11 @@
+{
+  //IDE 절대 경로 인식
+  "compilerOptions": {
+    "baseUrl": ".", // 프로젝트 루트를 기본 URL로 설정
+    "paths": {
+      "@/*": ["src/*"] // '@' 접두사를 src 디렉토리에 매핑
+    }
+  },
+
+  "include": ["src/**/*"]
+}
