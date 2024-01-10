@@ -1,10 +1,11 @@
+/** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-export default function PrimaryButton(props) {
+export function PrimaryButton(props) {
   return (
     <button
       css={css`
-        background-color: blue;
+        background-color: red;
         color: white;
         padding: 10px 20px;
         border: none;
