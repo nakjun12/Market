@@ -2,9 +2,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 // 앱의 메인 컴포넌트인 App을 임포트합니다.
-import App from "./App";
+import App from "@/App";
 // 스타일시트를 임포트합니다.
-import "./styles/index.css";
+import "@/styles/index.css";
 
 // React Query 클라이언트를 초기화합니다.
 // 이 클라이언트는 데이터 페칭 및 캐싱을 관리합니다.

@@ -1,28 +1,14 @@
-// NotFoundPage와 ProductPage 컴포넌트를 임포트합니다.
-import NotFoundPage from "./pages/NotFoundPage";
-import ProductPage from "./pages/product/ProductsPage";
+import WithLayout from "@/components/WithLayout";
+import Header from "@/components/header";
+import NotFoundPage from "@/pages/NotFoundPage";
+import ProductPage from "@/pages/product/ProductsPage";
+import { ROUTES } from "@/utils/constants/routePaths";
+import { createBrowserRouter } from "react-router-dom";
 
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
 // 현재는 직접 임포트를 사용하고 있지만, 나중에 필요시 아래의 코드로 대체할 수 있습니다.
 // const ProductPage = React.lazy(() => import("Pages/ProductPage"));
 // 추후 코드 스플리팅을 대비하여 미리 세팅하였음
-
-// 라우트 경로들을 정의한 객체입니다.
-export const ROUTES = {
-  HOME: "/",
-  LOGIN: "/login",
-  PRODUCT: "/product/:productid",
-  PRODUCTS: "/products",
-  MYPAGE: "/mypage",
-  BASKET: "/Basket",
-  TEST_COUNTER: "/test/counter",
-  ALL_PRODUCTS: "/products/all",
-  CATEGORY_PRODUCTS: "/products/:categoryId",
-  NOT_FOUND: "*",
-  POST: "/post",
-  TEST: "/test",
-  AUTH: "/auth"
-};
 
 // 라우트 설정을 정의한 배열입니다.
 // 각 라우트에 대한 경로와 해당 경로에서 렌더링할 컴포넌트를 지정합니다.
@@ -35,3 +21,45 @@ export const routeConfig = [
   // 와일드카드('*') 경로를 사용하여 예상치 못한 모든 경로에서 NotFoundPage를 띄웁니다.
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> }
 ];
+
+/**
+ * 라우터 설정을 생성합니다. 이 설정은 앱 전체의 페이지 라우팅 구조를 정의합니다.
+ *
+ * @returns {Router} - React Router v6에서 사용할 라우터 객체입니다.
+ */
+export const routers = createBrowserRouter([
+  {
+    // 홈 페이지 라우트 설정
+    path: ROUTES.HOME,
+    label: "WithLayoutPage",
+    element: <WithLayout />,
+    // errorElement: <Empty />, // 에러 발생 시 보여줄 컴포넌트 (옵션)
+    children: routeConfig // WithLayout 컴포넌트를 감싸는 하위 페이지 라우트
+  },
+  {
+    // WithLayout 없이 사용하는 페이지 라우트 예시
+    path: ROUTES.TEST,
+    label: "withOutLayOutPage",
+    element: <Header />
+    // errorElement: <Empty />, // 에러 발생 시 보여줄 컴포넌트 (옵션)
+  }
+]);
+
+// 아래 주석 처리된 코드는 라우터 설정을 확장하는 예시입니다.
+// 어드민 전용 페이지나 인증이 필요한 페이지 등 특정 조건에 따라
+// 라우트를 다르게 설정할 수 있습니다.
+// export const routers: RemixRouter = createBrowserRouter(
+//   routerData.map((router) => {
+//     if (router.withAuth) {
+//       return {
+//         path: router.path,
+//         element: <GeneralLayout>{ router.element }</GeneralLayout>
+//       }
+//     } else {
+//       return {
+//         path: router.path,
+//         element: router.element
+//       }
+//     }
+//   })
+// )
