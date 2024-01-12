@@ -1,16 +1,15 @@
-import { Modal } from "@/components/popup/modal/modalContent";
 import usePopupStore from "@/utils/hooks/store/usePopupStore";
 export default function ProductDetailPage() {
   const { openPopup, closePopup } = usePopupStore();
 
   const openCustomPopup = () => {
     const customContent = (
-      <Modal>
+      <>
         {/* 팝업 내용 */}
         <h2>Popup Title</h2>
-        <p>Popup Content</p>
+        <p>Popup Contentddddddddddddddddddddddddd</p>
         <button onClick={closePopup}>Close Popup</button>
-      </Modal>
+      </>
     );
     openPopup(customContent);
   };
