@@ -21,7 +21,7 @@
 
   /* 바디 스타일 */
   body {
-    @apply bg-red-100 font-sans text-gray-900;
+    @apply bg-white font-sans text-gray-900;
   }
 
   /* 모든 박스에 border-box 적용 */
