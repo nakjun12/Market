@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://pinemarket-api/test"; // 임시로 적었습니다..!
+const baseURL = "https://pinemarket-api.vercel.app";
 
 const marketApi = axios.create({
   baseURL
