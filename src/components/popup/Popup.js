@@ -51,3 +51,29 @@ const PopupBackdrop = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+/**
+ * 사용 예시:
+ *
+ * `Popup` 컴포넌트는 다음과 같이 사용할 수 있습니다:
+ *
+ * ```javascript
+ * import Popup from './Popup';
+ *
+ * function MyComponent() {
+ *   // 팝업 상태 관리 (예: useState, usePopupStore 사용 등)
+ *   const [isOpen, setIsOpen] = useState(false);
+ *
+ *   const closePopup = () => setIsOpen(false);
+ *
+ *   return (
+ *     <Popup isOpen={isOpen} closePopup={closePopup}>
+ *       <div>여기에 팝업 내용을 넣습니다.</div>
+ *     </Popup>
+ *   );
+ * }
+ * ```
+ *
+ * 이 예시에서 `isOpen`은 팝업이 열려 있는지를 나타내는 상태이며,
+ * `closePopup`은 팝업을 닫는 함수입니다. `children`에는 팝업에 표시될 내용을 넣습니다.
+ */
