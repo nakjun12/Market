@@ -20,7 +20,7 @@ const DelayedComponent = lazy(() =>
  */
 export default function WithLayout() {
   return (
-    <>
+    <div className="flex flex-col justify-between h-screen">
       <Header />
       <Modal />
       <Suspense fallback={<div>대기중</div>}>
@@ -29,9 +29,11 @@ export default function WithLayout() {
             이는 React Router의 중첩된 라우팅 구조를 활용하는데 중요한 역할을 합니다.
             예시로 router.js routeConfig의 element를 넣습니다.
             */}
-        <Outlet />
-        <Footer />
+        <div className="h-full">
+          <Outlet />
+        </div>
       </Suspense>
-    </>
+      <Footer />
+    </div>
   );
 }
