@@ -4,11 +4,11 @@ import { useCallback, useState } from "react";
 
 export default function ProductDetailPage() {
   const { openPopup, closePopup } = usePopupStore();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setModalOpen(true);
+  const openModal = () => setIsModalOpen(true);
   const closeModal = useCallback(() => {
-    setModalOpen(false);
+    setIsModalOpen(false);
   }, []);
   const openCustomPopup = () => {
     const customContent = (
