@@ -6,6 +6,7 @@ import { ROUTES } from "@/utils/constants/routePaths";
 import { createBrowserRouter } from "react-router-dom";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
 import { LoginPage } from "./pages/login/LoginPage";
+import { JoinPage } from "./pages/join/JoinPage";
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
 // 현재는 직접 임포트를 사용하고 있지만, 나중에 필요시 아래의 코드로 대체할 수 있습니다.
 // const ProductPage = React.lazy(() => import("Pages/ProductPage"));
@@ -19,6 +20,7 @@ export const routeConfig = [
   { path: ROUTES.HOME, element: <ProductsPage />, index: true },
   { path: ROUTES.PRODUCT, element: <ProductDetailPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
+  { path: ROUTES.JOIN, element: <JoinPage /> },
 
   // 404 Not Found 페이지 경로, NotFoundPage 컴포넌트를 렌더링합니다.
   // 와일드카드('*') 경로를 사용하여 예상치 못한 모든 경로에서 NotFoundPage를 띄웁니다.
