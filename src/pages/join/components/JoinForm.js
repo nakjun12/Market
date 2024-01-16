@@ -1,4 +1,29 @@
+import { postAuthSignup } from "@/api/marketApi";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+
 export const JoinForm = () => {
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: postAuthSignup,
+    mutationKey: "login"
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirm-password");
+    const username = formData.get("username");
+
+    console.log("email", email);
+    console.log("password", password);
+    console.log("confirmPassword", confirmPassword);
+
+    mutation.mutate({ email, password, username });
+  };
+
   return (
     <div>
       <section className="bg-base-50 dark:bg-base-900">
@@ -8,7 +33,7 @@ export const JoinForm = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                 회원가입
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="username"
@@ -61,7 +86,7 @@ export const JoinForm = () => {
                     Confirm password
                   </label>
                   <input
-                    type="confirm-password"
+                    type="password"
                     name="confirm-password"
                     id="confirm-password"
                     placeholder="••••••••"
@@ -74,14 +99,16 @@ export const JoinForm = () => {
                   className="w-full text-gray-700 bg-base-300 hover:bg-base-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                   가입하기
                 </button>
-                <p className="text-sm font-light text-base-500">
-                  이미 회원 가입하셨나요?{" "}
-                  <a
-                    href="#"
+                <div className="flex gap-2">
+                  <p className="text-sm font-light text-base-500">
+                    이미 회원 가입하셨나요?
+                  </p>
+                  <div
+                    onClick={() => navigate("/login")}
                     className="text-blue-500 font-black hover:underline">
                     Login here
-                  </a>
-                </p>
+                  </div>
+                </div>
               </form>
             </div>
           </div>

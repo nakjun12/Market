@@ -1,4 +1,19 @@
+import { postAuthLogin } from "@/api/marketApi";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+
 export const LoginForm = () => {
+  const navigate = useNavigate();
+  const mutation = useMutation({ mutationFn: postAuthLogin });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    mutation.mutate({ email, password });
+  };
   return (
     <div>
       <section className="bg-base-50 dark:bg-base-900">
@@ -8,7 +23,7 @@ export const LoginForm = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                 로그인
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="email"
@@ -45,14 +60,16 @@ export const LoginForm = () => {
                   className="w-full text-gray-700 bg-base-300 hover:bg-base-400 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                   로그인
                 </button>
-                <p className="text-sm font-light text-base-500">
-                  가입을 하셔야 하나요?{"  "}
-                  <a
-                    href="#"
+                <div className="flex gap-2">
+                  <p className="text-sm font-light text-base-500">
+                    가입이 필요하신가요?
+                  </p>
+                  <div
+                    onClick={() => navigate("/join")}
                     className="text-blue-500 font-black hover:underline">
                     Join here
-                  </a>
-                </p>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
