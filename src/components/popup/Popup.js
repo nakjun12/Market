@@ -19,13 +19,14 @@ import { createPortal } from "react-dom";
  */
 const Popup = ({ isOpen, closePopup, children }) => {
   useEffect(() => {
+    const body = document.body;
     // 팝업이 열려 있을 때 body 스크롤을 막습니다.
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      body.style.overflow = "hidden"; // 스크롤 방지
     }
     return () => {
       // 컴포넌트가 언마운트될 때 스크롤을 다시 허용합니다.
-      document.body.style.overflow = "unset";
+      body.style.overflow = "visible"; // 스크롤 허용
     };
   }, [isOpen]);
 
