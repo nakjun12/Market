@@ -12,10 +12,10 @@ import { useEffect, useRef } from "react";
  *
  * 예시:
  * ```jsx
- * const [isModalOpen, setIsModalOpen] = useState(false);
+ * const [isDialogOpen, setIsDialogOpen] = useState(false);
  *
- * const openModal = () => setIsModalOpen(true);
- * const handleBackdropClick = () => setIsModalOpen(false);
+ * const openDialog = () => setIsDialogOpen(true);
+ *   const closeDialog = () => setIsDialogOpen(false);
  *
  * return (
  *   <div>
