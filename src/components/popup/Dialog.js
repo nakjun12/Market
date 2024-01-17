@@ -3,29 +3,13 @@ import { css } from "@emotion/react";
 import { useEffect, useRef } from "react";
 
 /**
- * Dialog 컴포넌트는 모달 대화 상자를 렌더링합니다.
+ * Dialog 컴포넌트는 독립적인 모달 대화 상자를 렌더링하는 데 사용됩니다.
+ * 이 컴포넌트는 직접적으로 상태를 전달받아 모달을 렌더링하며,
+ * 내부 상태 관리나 비즈니스 로직을 포함하지 않습니다.
  *
- * 사용법:
- * 1. isOpen 상태를 정의하여 모달이 열려 있는지 여부를 제어합니다.
- * 2. onBackdropClick 함수를 정의하여 백드롭 클릭 시 모달을 닫는 로직을 구현합니다.
- * 3. Dialog 컴포넌트 안에 모달에 표시할 내용을 children으로 전달합니다.
+ * - `isOpen` prop을 통해 모달의 표시 여부를 제어합니다.
+ * - `onBackdropClick` prop을 통해 백드롭 클릭 시 호출되는 함수를 전달할 수 있습니다.
  *
- * 예시:
- * ```jsx
- * const [isDialogOpen, setIsDialogOpen] = useState(false);
- *
- * const openDialog = () => setIsDialogOpen(true);
- *   const closeDialog = () => setIsDialogOpen(false);
- *
- * return (
- *   <div>
- *     <button onClick={openModal}>모달 열기</button>
- *     <Dialog isOpen={isModalOpen} onBackdropClick={handleBackdropClick}>
- *       <div>모달 컨텐츠</div>
- *     </Dialog>
- *   </div>
- * );
- * ```
  * @param {Object} props - 컴포넌트 props
  * @param {boolean} props.isOpen - 대화 상자가 열려 있는지 여부
  * @param {Function|null} props.onBackdropClick - 백드롭 클릭 시 호출되는 함수 또는 null
@@ -92,3 +76,27 @@ const dialogStyle = (isOpen) => css`
   }
   /* 여기에 필요한 다른 dialog 스타일을 추가할 수 있습니다 */
 `;
+
+/**
+ * 사용법:
+ * 1. isOpen 상태를 정의하여 모달이 열려 있는지 여부를 제어합니다.
+ * 2. onBackdropClick 함수를 정의하여 백드롭 클릭 시 모달을 닫는 로직을 구현합니다.
+ * 3. Dialog 컴포넌트 안에 모달에 표시할 내용을 children으로 전달합니다.
+ *
+ * 예시:
+ * ```jsx
+ * const [isDialogOpen, setIsDialogOpen] = useState(false);
+ *
+ * const openDialog = () => setIsDialogOpen(true);
+ *   const closeDialog = () => setIsDialogOpen(false);
+ *
+ * return (
+ *   <div>
+ *     <button onClick={openModal}>모달 열기</button>
+ *     <Dialog isOpen={isModalOpen} onBackdropClick={handleBackdropClick}>
+ *       <div>모달 컨텐츠</div>
+ *     </Dialog>
+ *   </div>
+ * );
+ * ```
+ */
