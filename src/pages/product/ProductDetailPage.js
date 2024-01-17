@@ -1,15 +1,15 @@
 import Dialog from "@/components/popup/Dialog";
 import usePopupStore from "@/utils/hooks/store/usePopupStore";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 export default function ProductDetailPage() {
   const { openPopup, closePopup } = usePopupStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     setIsModalOpen(false);
-  }, []);
+  };
   const openCustomPopup = () => {
     const customContent = (
       <>
@@ -60,9 +60,10 @@ export default function ProductDetailPage() {
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
         </svg>
       </div>
-      <Dialog isOpen={isModalOpen} onClose={closeModal}>
+      <Dialog isOpen={isModalOpen} onClose={closeModal} closeOnBackdrop={false}>
         <div className="flex flex-col items-center justify-center w-full h-full">
           하이
+          <button onClick={closeModal}>하하</button>
         </div>
       </Dialog>
       <div className="px-4 py-2"></div>
