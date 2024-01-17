@@ -1,4 +1,5 @@
 import { postAuthLogin } from "@/api/marketApi";
+import { PASSWORD_REGEX } from "@/utils/constants/constants";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -36,7 +37,7 @@ export const LoginForm = () => {
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-base-900 sm:text-sm rounded-lg block w-full p-2.5 "
                     placeholder="name@company.com"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -49,9 +50,11 @@ export const LoginForm = () => {
                     type="password"
                     name="password"
                     id="password"
+                    title="비밀번호는 6~12자리여야 하며, 최소 하나의 숫자, 영문자, 특수문자를 포함해야 합니다."
                     placeholder="••••••••"
+                    pattern={PASSWORD_REGEX}
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                    required=""
+                    required
                   />
                 </div>
 

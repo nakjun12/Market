@@ -1,27 +1,36 @@
 import { postAuthSignup } from "@/api/marketApi";
+import { PASSWORD_REGEX } from "@/utils/constants/constants";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 export const JoinForm = () => {
   const navigate = useNavigate();
-  const mutation = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: postAuthSignup,
-    mutationKey: "login"
+    onSuccess: () => {
+      // 모달 / 로딩처리
+    },
+    onError: () => {
+      // 모달 / 로딩처리
+    }
   });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // 로딩 중 얼리 리턴
+    if (isPending) return;
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
     const confirmPassword = formData.get("confirm-password");
     const username = formData.get("username");
 
-    console.log("email", email);
-    console.log("password", password);
-    console.log("confirmPassword", confirmPassword);
+    if (password !== confirmPassword) {
+      return console.log("패스워드 틀림 모달 리턴");
+    }
 
-    mutation.mutate({ email, password, username });
+    mutate({ email, password, username });
   };
 
   return (
@@ -46,7 +55,7 @@ export const JoinForm = () => {
                     id="username"
                     placeholder="Brian"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -61,7 +70,7 @@ export const JoinForm = () => {
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-base-900 sm:text-sm rounded-lg block w-full p-2.5 "
                     placeholder="name@company.com"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -74,9 +83,11 @@ export const JoinForm = () => {
                     type="password"
                     name="password"
                     id="password"
+                    title="비밀번호는 6~12자리여야 하며, 최소 하나의 숫자, 영문자, 특수문자를 포함해야 합니다."
                     placeholder="••••••••"
+                    pattern={PASSWORD_REGEX}
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -89,9 +100,11 @@ export const JoinForm = () => {
                     type="password"
                     name="confirm-password"
                     id="confirm-password"
+                    title="비밀번호는 6~12자리여야 하며, 최소 하나의 숫자, 영문자, 특수문자를 포함해야 합니다."
                     placeholder="••••••••"
+                    pattern={PASSWORD_REGEX}
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                    required=""
+                    required
                   />
                 </div>
                 <button
