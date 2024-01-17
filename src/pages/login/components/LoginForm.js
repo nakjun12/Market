@@ -5,16 +5,28 @@ import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const mutation = useMutation({ mutationFn: postAuthLogin });
+  const { mutate, isPending } = useMutation({
+    mutationFn: postAuthLogin,
+    onSuccess: () => {
+      // 모달 / 로딩처리
+    },
+    onError: () => {
+      // 모달 / 로딩처리
+    }
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // 로딩 중 얼리 리턴
+    if (isPending) return;
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
 
-    mutation.mutate({ email, password });
+    mutate({ email, password });
   };
+
   return (
     <div>
       <section className="bg-base-50 dark:bg-base-900">
