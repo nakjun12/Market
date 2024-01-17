@@ -4,13 +4,35 @@ import { useEffect, useRef } from "react";
 
 /**
  * Dialog 컴포넌트는 모달 대화 상자를 렌더링합니다.
+ *
+ * 사용법:
+ * 1. isOpen 상태를 정의하여 모달이 열려 있는지 여부를 제어합니다.
+ * 2. onBackdropClick 함수를 정의하여 백드롭 클릭 시 모달을 닫는 로직을 구현합니다.
+ * 3. Dialog 컴포넌트 안에 모달에 표시할 내용을 children으로 전달합니다.
+ *
+ * 예시:
+ * ```jsx
+ * const [isModalOpen, setIsModalOpen] = useState(false);
+ *
+ * const openModal = () => setIsModalOpen(true);
+ * const handleBackdropClick = () => setIsModalOpen(false);
+ *
+ * return (
+ *   <div>
+ *     <button onClick={openModal}>모달 열기</button>
+ *     <Dialog isOpen={isModalOpen} onBackdropClick={handleBackdropClick}>
+ *       <div>모달 컨텐츠</div>
+ *     </Dialog>
+ *   </div>
+ * );
+ * ```
  * @param {Object} props - 컴포넌트 props
  * @param {boolean} props.isOpen - 대화 상자가 열려 있는지 여부
- * @param {Function} props.onClose - 대화 상자를 닫을 때 호출되는 함수
+ * @param {Function|null} props.onBackdropClick - 백드롭 클릭 시 호출되는 함수 또는 null
  * @param {React.ReactNode} props.children - 대화 상자 내부에 표시될 요소들
  * @returns {JSX.Element} React 요소를 반환합니다.
  */
-export default function Dialog({ isOpen, onClose, children }) {
+export default function Dialog({ isOpen, onBackdropClick = null, children }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -24,25 +46,30 @@ export default function Dialog({ isOpen, onClose, children }) {
     } else {
       // 대화 상자를 닫습니다.
       dialogRef.current.close();
-      console.log("반응했음");
       // 스크롤을 허용하기 위해 body의 overflow를 unset으로 설정합니다.
       body.style.overflow = "unset";
     }
 
     // 배경을 클릭했을 때 대화 상자를 닫는 이벤트 핸들러입니다.
     const handleBackdropClick = (e) => {
-      if (e.target === dialogRef.current) {
-        onClose();
+      if (e.target === dialogRef.current && onBackdropClick) {
+        onBackdropClick();
       }
     };
 
-    dialogRef.current.addEventListener("click", handleBackdropClick);
+    if (onBackdropClick) {
+      // onBackdropClick가 true일 때만 이벤트 리스너를 추가합니다.
+      dialogRef.current.addEventListener("click", handleBackdropClick);
+    }
 
     // 컴포넌트 언마운트 시 이벤트 리스너를 정리합니다.
     return () => {
-      dialogRef.current.removeEventListener("click", handleBackdropClick);
+      if (onBackdropClick) {
+        // 컴포넌트 언마운트 시 이벤트 리스너를 정리합니다.
+        dialogRef.current.removeEventListener("click", handleBackdropClick);
+      }
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   return (
     <dialog ref={dialogRef} css={dialogStyle(isOpen)}>
