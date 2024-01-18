@@ -11,18 +11,28 @@ const marketApi = axios.create({
  *
  */
 // hello + 사용자 이름 반환
-export const getHello = (name) => {
-  return marketApi.get(`/hello/${name}`);
+export const getHello = () => {
+  return marketApi.get(`/hello/test`);
 };
 
 // 받아온 회원이 입력한 정보로 회원가입
-export const postAuthSignup = (userData) => {
-  return marketApi.post("/auth/signup", userData);
+export const postAuthSignup = ({ email, password, username }) => {
+  const response = marketApi.post("/auth/signup", {
+    email,
+    password,
+    username
+  });
+  return response.data;
 };
 
 // 사용자가 입력한 정보로 로그인
-export const postAuthLogin = (loginData) => {
-  return marketApi.post("/auth/login", loginData);
+export const postAuthLogin = ({ email, password }) => {
+  const response = marketApi.post("/auth/login", {
+    email,
+    password
+  });
+  console.log("response", response);
+  return response.data;
 };
 
 // 토큰 리프레쉬
