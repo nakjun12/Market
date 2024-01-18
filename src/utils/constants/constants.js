@@ -7,4 +7,4 @@
 - .{6,12} : 총 길이는 6자에서 12자 사이
 */
 
-export const PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[W_]).{6,12}$";
+export const PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#]).{6,12}$";

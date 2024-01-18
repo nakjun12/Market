@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://pinemarket-api.vercel.app";
+const baseURL = "https://pinemarket-api.cielui.com";
 
 const marketApi = axios.create({
   baseURL

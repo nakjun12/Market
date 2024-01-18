@@ -20,10 +20,11 @@ export const Modal = () => {
 
   const closePopup = closeOnBackdrop ? closeModal : null;
   return (
-    <Popup isOpen={isOpen} closePopup={closePopup}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        {content}
-      </ModalContent>
+    <Popup
+      isOpen={isOpen}
+      closePopup={closePopup}
+      onClick={(e) => e.stopPropagation()}>
+      {content}
     </Popup>
   );
 };
