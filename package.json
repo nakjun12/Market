@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "format": "prettier --write \"src/**/*.js\"",
-    "test": "vitest watch"
+    "test": "vitest watch",
+    "docker:build": "docker-compose build",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
