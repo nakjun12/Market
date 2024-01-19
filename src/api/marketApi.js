@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://pinemarket.cielui.com/";
+const baseURL = "https://pinemarket.cielui.com";
 
 const marketApi = axios.create({
   baseURL,
