@@ -78,7 +78,9 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                     className="productCard"
                     onClick={() => handleProductPage(product.id)}>
                     <CardImg src={product.imgUrl} alt={product.title} />
-                    <h2>{product.title}</h2>
+
+                    <ProductBadge>{product.content}</ProductBadge>
+                    <ProductTitle>{product.title}</ProductTitle>
                   </Card>
                 );
               }
@@ -113,12 +115,29 @@ const Card = styled.div`
   margin: 1%;
   padding: 10px;
   box-sizing: border-box;
-  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 `;
 
 const CardImg = styled.img`
   border-radius: 12px;
   margin-bottom: 5px;
+`;
+
+const ProductBadge = styled.div`
+  width: 110px;
+  height: 24px;
+  background-color: #5cb8bc;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  margin-bottom: 4px;
+`;
+
+const ProductTitle = styled.h1`
+  font-size: 19px;
+  font-weight: 700;
 `;
 
 const NoticeMsg = styled.p`
