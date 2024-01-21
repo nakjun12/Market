@@ -7,7 +7,7 @@ const ProductsSearchPage = () => {
   const [inputVal, setInputVal] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearchSubmit = async (current) => {
+  const handleSearchSubmit = (current) => {
     let searchWord;
 
     console.log("type::", typeof current);

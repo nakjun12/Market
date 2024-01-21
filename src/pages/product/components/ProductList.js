@@ -1,69 +1,96 @@
+import React, { useEffect, useRef, useCallback } from "react";
 import styled from "@emotion/styled";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-// 검색 결과 리스트를 만드는 컴포넌트
-const ProductList = ({ productList }) => {
-  const navigate = useNavigate();
-  const [listData, setListData] = useState();
+// 상품 리스트를 보여주는 공용 컴포넌트
 
-  const ProductListWrap = styled.div`
-    padding: 20px;
-  `;
+const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
+  // Intersection Observer를 사용하여 마지막 상품이 보여질 때를 감지
+  const observer = useRef();
+  // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
+  const [showTopButton, setShowTopButton] = useState(false);
 
-  const CardWrap = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-  `;
+  // 마지막 상품에 대한 콜백, Intersection Observer와 함께 사용
+  const lastProductRef = useCallback(
+    (node) => {
+      if (loading || !hasMore) return;
 
-  const Card = styled.div`
-    width: 48%;
-    margin: 1%;
-    padding: 10px;
-    box-sizing: border-box;
-    // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  `;
+      if (observer.current) {
+        observer.current.disconnect();
+      }
 
-  const CardImg = styled.img`
-    border-radius: 4px;
-    margin-bottom: 10%;
-  `;
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchMoreData();
+        }
+      });
 
-  const NoticeMsg = styled.p`
-    font-size: 16px;
-    font-weight: 500;
-    text-align: center;
-    padding: 20px;
-  `;
+      if (node) {
+        observer.current.observe(node);
+      }
+    },
+    [loading, hasMore, fetchMoreData]
+  );
 
-  const handleProductPage = (id) => {
-    console.log("id:", id); // /product/:productid
-    navigate(`/product/${id}`);
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+
+    if (scrollY > 300) {
+      setShowTopButton(true);
+    } else {
+      setShowTopButton(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
-    setListData(productList);
-  }, [productList]);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <ProductListWrap>
-      {listData && listData.length > 0 ? (
-        <CardWrap>
-          {listData.map((product) => (
-            <Card
-              key={product.id}
-              className="productCard"
-              onClick={() => handleProductPage(product.id)}>
-              <CardImg src={product.imgUrl} alt={product.title} />
-              <h2>{product.title}</h2>
-            </Card>
-          ))}
-        </CardWrap>
+      {productList && productList.length > 0 ? (
+        <>
+          <CardWrap>
+            {productList.map((product, index) => {
+              if (productList.length === index + 1) {
+                return (
+                  <Card
+                    key={index}
+                    ref={lastProductRef}
+                    className="productCard"
+                    onClick={() => handleProductPage(product.id)}>
+                    <CardImg src={product.imgUrl} alt={product.title} />
+                    <h2>{product.title}</h2>
+                  </Card>
+                );
+              } else {
+                return (
+                  <Card
+                    key={index}
+                    className="productCard"
+                    onClick={() => handleProductPage(product.id)}>
+                    <CardImg src={product.imgUrl} alt={product.title} />
+                    <h2>{product.title}</h2>
+                  </Card>
+                );
+              }
+            })}
+          </CardWrap>
+          <TopButton show={showTopButton} onClick={scrollToTop}>
+            Top
+          </TopButton>
+        </>
       ) : (
         <NoticeMsg>
-          {listData
-            ? "검색 결과가 없습니다."
-            : "검색 결과를 불러오는 중입니다..."}
+          {productList ? "상품이 없습니다." : "상품을 불러오는 중입니다..."}
         </NoticeMsg>
       )}
     </ProductListWrap>
@@ -71,3 +98,46 @@ const ProductList = ({ productList }) => {
 };
 
 export default ProductList;
+
+const ProductListWrap = styled.div`
+  padding: 20px;
+`;
+
+const CardWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const Card = styled.div`
+  width: 48%;
+  margin: 1%;
+  padding: 10px;
+  box-sizing: border-box;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const CardImg = styled.img`
+  border-radius: 12px;
+  margin-bottom: 5px;
+`;
+
+const NoticeMsg = styled.p`
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  padding: 20px;
+`;
+
+const TopButton = styled.button`
+  position: fixed;
+  z-index: 100;
+  bottom: 30px;
+  right: 14px;
+  display: block;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  color: white;
+  display: ${(props) => (props.show ? "block" : "none")};
+`;
