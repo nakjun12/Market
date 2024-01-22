@@ -71,7 +71,7 @@ export const postPosts = (postData) => {
 
 // 검색 조건에 따라 게시물 가져오기
 export const getPublishedPosts = (page, limit, query, orderBy, direction) => {
-  return postsApi.get("/posts/published", {
+  return marketApi.get("/posts/published", {
     params: {
       page,
       limit,
