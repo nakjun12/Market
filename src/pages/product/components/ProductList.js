@@ -68,7 +68,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                     className="productCard"
                     onClick={() => handleProductPage(product.id)}>
                     <CardImg src={product.imgUrl} alt={product.title} />
-                    <h2>{product.title}</h2>
+                    <ProductTitle>{product.title}</ProductTitle>
                   </Card>
                 );
               } else {
@@ -124,10 +124,11 @@ const CardImg = styled.img`
 `;
 
 const ProductBadge = styled.div`
-  width: 110px;
-  height: 24px;
+  width: 100px;
+  height: 22px;
   background-color: #5cb8bc;
   color: white;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,7 +137,7 @@ const ProductBadge = styled.div`
 `;
 
 const ProductTitle = styled.h1`
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 700;
 `;
 
