@@ -4,12 +4,11 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 /**
- * Popup 컴포넌트는 모달 형태의 팝업 UI를 제공합니다.
- * 이 컴포넌트는 'isOpen', 'closePopup', 'children' 등의 props를 받아서 처리합니다.
+ * Popup 컴포넌트는 UI를 받아서 popup-root div에 제공합니다.
  *
  * - isOpen: 팝업이 열려 있는지 여부를 나타냅니다.
  * - closePopup: 팝업을 닫는 함수입니다.
- * - children: 팝업 내부에 렌더링될 요소들입니다.
+ * - children: 팝업 내부에 렌더링할 요소들입니다.
  *
  * @param {Object} props - 컴포넌트에 전달되는 props.
  * @param {boolean} props.isOpen - 팝업이 열려 있는지의 여부.
@@ -52,29 +51,3 @@ const PopupBackdrop = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-/**
- * 사용 예시:
- *
- * `Popup` 컴포넌트는 다음과 같이 사용할 수 있습니다:
- *
- * ```javascript
- * import Popup from './Popup';
- *
- * function MyComponent() {
- *   // 팝업 상태 관리 (예: useState, usePopupStore 사용 등)
- *   const [isOpen, setIsOpen] = useState(false);
- *
- *   const closePopup = () => setIsOpen(false);
- *
- *   return (
- *     <Popup isOpen={isOpen} closePopup={closePopup}>
- *       <div>여기에 팝업 내용을 넣습니다.</div>
- *     </Popup>
- *   );
- * }
- * ```
- *
- * 이 예시에서 `isOpen`은 팝업이 열려 있는지를 나타내는 상태이며,
- * `closePopup`은 팝업을 닫는 함수입니다. `children`에는 팝업에 표시될 내용을 넣습니다.
- */

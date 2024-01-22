@@ -1,9 +1,10 @@
 import axios from "axios";
 
-const baseURL = "https://pinemarket-api.cielui.com";
+const baseURL = "https://pinemarket.cielui.com";
 
 const marketApi = axios.create({
-  baseURL
+  baseURL,
+  withCredentials: true
 });
 
 /**
@@ -36,8 +37,8 @@ export const postAuthLogin = ({ email, password }) => {
 };
 
 // 토큰 리프레쉬
-export const postRefreshToken = (token) => {
-  return marketApi.post("/auth/refresh-token", token);
+export const postRefreshToken = () => {
+  return marketApi.post("/auth/refresh-token");
 };
 
 //
@@ -70,7 +71,14 @@ export const postPosts = (postData) => {
 };
 
 // 검색 조건에 따라 게시물 가져오기
-export const getPublishedPosts = (page, limit, query, orderBy, direction) => {
+
+export const getPublishedPosts = ({
+  page,
+  limit,
+  query,
+  orderBy,
+  direction
+}) => {
   return marketApi.get("/posts/published", {
     params: {
       page,
