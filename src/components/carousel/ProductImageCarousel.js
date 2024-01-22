@@ -1,5 +1,11 @@
 // import Swiper core and required modules
-import { A11y, Keyboard, Mousewheel, Pagination } from "swiper/modules";
+import {
+  A11y,
+  Autoplay,
+  Keyboard,
+  Mousewheel,
+  Pagination
+} from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ImageSwiperSlide from "./ImageSwiperSlide";
 
@@ -28,7 +34,7 @@ const ProductImageCarousel = ({ images }) => {
   return (
     <Swiper
       // Swiper 모듈 추가
-      modules={[Keyboard, Pagination, A11y, Mousewheel]}
+      modules={[Keyboard, Pagination, A11y, Mousewheel, Autoplay]}
       // 한 번에 하나의 슬라이드를 표시
       slidesPerView={1}
       // 마진 상단 추가 및 z-index 설정
@@ -51,6 +57,11 @@ const ProductImageCarousel = ({ images }) => {
       }}
       lazy="true" // 이미지에 대한 레이지 로딩 활성화
       speed={400} // 전환 속도(밀리초)
+      autoplay={{
+        delay: 2500, // 2.5초 마다 자동 재생
+        disableOnInteraction: true, // 사용자 상호작용 후 자동 재생 비활성화
+        pauseOnMouseEnter: true // 마우스 포인터가 캐러셀 위에 있을 때 자동 재생 일시 정지
+      }}
       // 스와이퍼 인스턴스 접근 및 이벤트 핸들링을 위해 아래 주석 해제
       // onSwiper={(swiper) => console.log(swiper)}
       // onSlideChange={() => console.log("슬라이드 변경")}
