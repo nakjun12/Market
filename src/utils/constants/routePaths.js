@@ -25,5 +25,7 @@ export const ROUTES = {
   NOT_FOUND: "*", // 일치하는 라우트가 없을 때 표시될 페이지 (404 페이지 등)
   POST: "/post", // 게시물 생성 또는 표시 페이지 라우트
   TEST: "/test", // 테스트 페이지 라우트
-  AUTH: "/auth" // 인증 관련 페이지 라우트
+  AUTH: "/auth", // 인증 관련 페이지 라우트
+  SEARCH: "/search", // 검색 페이지
+  SEARCH_RESULT: "/search/:keyword"
 };

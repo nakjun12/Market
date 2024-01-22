@@ -1,7 +1,18 @@
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleSearchIconClick = () => {
+    // 현재 경로가 검색 페이지가 아닌 경우에만 동작하도록 처리
+    if (location.pathname !== "/search") {
+      navigate("/search");
+    }
+  };
+
   return (
     <div className="navbar bg-base-200">
       <div className="navbar-start">
@@ -28,7 +39,9 @@ export default function Header() {
         <a className="btn btn-ghost text-xl">PineMarket</a>
       </div>
       <div className="navbar-end">
-        <button className="btn btn-ghost btn-circle">
+        <button
+          className="btn btn-ghost btn-circle"
+          onClick={handleSearchIconClick}>
           <MagnifyingGlassIcon className="w-6 h-6" />
         </button>
         <div className="dropdown dropdown-end">
