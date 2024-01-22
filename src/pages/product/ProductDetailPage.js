@@ -1,4 +1,27 @@
+import Dialog from "@/components/popup/Dialog";
+import useModalStore from "@/utils/hooks/store/useModalStore";
+import { useState } from "react";
+
 export default function ProductDetailPage() {
+  const { openModal, closeModal } = useModalStore();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const openDialog = () => setIsDialogOpen(true);
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+  const openCustomPopup = () => {
+    const customContent = (
+      <>
+        {/* 팝업 내용 */}
+        <h2>Popup Title</h2>
+        <p>Popup Contentddddddddddddddddddddddddd</p>
+        <button onClick={closeModal}>Close Popup</button>
+      </>
+    );
+    openModal(customContent, false);
+  };
+
   return (
     <div className="max-w-sm mx-auto">
       <div className="flex items-center justify-between px-4 py-2">
@@ -37,7 +60,12 @@ export default function ProductDetailPage() {
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
         </svg>
       </div>
-      ddd
+      <Dialog isOpen={isDialogOpen} onBackdropClick={closeDialog}>
+        <div className="flex flex-col items-center justify-center w-full h-full">
+          하이
+        </div>
+        <button onClick={closeDialog}>하하</button>
+      </Dialog>
       <div className="px-4 py-2"></div>
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
@@ -50,7 +78,10 @@ export default function ProductDetailPage() {
         <div className="mt-2">
           <p className="text-sm">me.</p>
         </div>
-        <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full mt-4 bg-orange-400 text-white">
+        <button onClick={openDialog}>키키</button>
+        <button
+          onClick={openCustomPopup}
+          className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full mt-4 bg-orange-400 text-white">
           Contact seller
         </button>
       </div>
