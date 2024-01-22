@@ -86,8 +86,11 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
               }
             })}
           </CardWrap>
-          <TopButton show={showTopButton} onClick={scrollToTop}>
-            Top
+          <TopButton
+            className="btn btn-neutral"
+            show={showTopButton}
+            onClick={scrollToTop}>
+            TOP
           </TopButton>
         </>
       ) : (
@@ -125,7 +128,7 @@ const CardImg = styled.img`
 
 const ProductBadge = styled.div`
   width: 100px;
-  height: 22px;
+  height: 24px;
   background-color: #5cb8bc;
   color: white;
   font-size: 14px;
@@ -150,14 +153,10 @@ const NoticeMsg = styled.p`
 
 const TopButton = styled.button`
   position: fixed;
-  z-index: 100;
+  z-index: 1;
   bottom: 30px;
-  right: 14px;
-  display: block;
-  width: 50px;
-  height: 50px;
-  background-color: rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  color: white;
+  right: 10px;
+  border-radius: 50px;
+  opacity: 0.8;
   display: ${(props) => (props.show ? "block" : "none")};
 `;

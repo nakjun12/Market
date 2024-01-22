@@ -91,4 +91,5 @@ const ProductPageText = styled.h1`
   margin-top: 20px;
   font-size: 18px;
   font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
 `;

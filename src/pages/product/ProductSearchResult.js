@@ -47,17 +47,24 @@ const ProductSearchResult = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const { scrollTop, clientHeight, scrollHeight } = loaderRef.current;
+      if (loaderRef.current) {
+        const { scrollTop, clientHeight, scrollHeight } = loaderRef.current;
 
-      if (scrollHeight - scrollTop === clientHeight) {
-        fetchMoreData();
+        if (scrollHeight - scrollTop === clientHeight) {
+          fetchMoreData();
+        }
       }
     };
 
-    loaderRef.current.addEventListener("scroll", handleScroll);
+    if (loaderRef.current) {
+      // 값이 없는 경우(null) 페이지 이동 시 에러 발생하기 때문에 null이 아닐때만 동작하도록 함
+      loaderRef.current.addEventListener("scroll", handleScroll);
+    }
 
     return () => {
-      loaderRef.current.removeEventListener("scroll", handleScroll);
+      if (loaderRef.current) {
+        loaderRef.current.removeEventListener("scroll", handleScroll);
+      }
     };
   }, [fetchMoreData]);
 
@@ -80,8 +87,8 @@ const ProductSearchResult = () => {
   return (
     <div>
       <SearchResultText>
-        다음은 <span style={{ color: "rgb(251 146 60)" }}>{keyword}</span>에
-        대한 검색 결과입니다.
+        다음은 <span style={{ color: "black" }}>{keyword}</span>에 대한 검색
+        결과입니다.
       </SearchResultText>
 
       <ProductList
@@ -106,4 +113,5 @@ const SearchResultText = styled.h1`
   padding: 20px;
   font-size: 18px;
   font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
 `;

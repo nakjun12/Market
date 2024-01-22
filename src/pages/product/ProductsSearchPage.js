@@ -58,11 +58,8 @@ const ProductsSearchPage = () => {
 
   return (
     <div>
-      <div className="navbar bg-base-100">
-        <div className="navbar-start">
-          <a className="btn btn-ghost text-xl">daisyUI</a>
-        </div>
-        <div className="navbar-center lg:flex">
+      <div className="navbar bg-base-100" style={{ padding: "15px" }}>
+        <div className="navbar-start lg:flex">
           <div className="flex-none gap-2">
             <div className="form-control">
               <input
@@ -71,7 +68,7 @@ const ProductsSearchPage = () => {
                 className="input input-bordered w-24 md:w-auto"
                 value={inputVal}
                 onChange={handleSearchChange}
-                style={{ width: "15rem" }}
+                style={{ width: "20.5rem" }}
               />
             </div>
           </div>
