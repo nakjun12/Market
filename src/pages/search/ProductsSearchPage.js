@@ -42,7 +42,7 @@ const ProductsSearchPage = () => {
     console.log("handleSearchSubmit inputVal::", searchWord);
 
     // 검색어 업데이트 및 초기화 + 메뉴 이동
-    navigate(`/search/${encodeURIComponent(searchWord)}`);
+    navigate(`/web/search/${encodeURIComponent(searchWord)}`);
     setSearchTerm(searchWord);
     setInputVal("");
   };

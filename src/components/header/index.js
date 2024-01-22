@@ -8,8 +8,8 @@ export default function Header() {
 
   const handleSearchIconClick = () => {
     // 현재 경로가 검색 페이지가 아닌 경우에만 동작하도록 처리
-    if (location.pathname !== "/search") {
-      navigate("/search");
+    if (location.pathname !== "/web/search") {
+      navigate("/web/search");
     }
   };
 
