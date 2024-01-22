@@ -1,4 +1,9 @@
-import { postAuthLogin, postRefreshToken } from "@/api/marketApi";
+import {
+  getHello,
+  getUsersMe,
+  postAuthLogin,
+  postRefreshToken
+} from "@/api/marketApi";
 import { PASSWORD_REGEX } from "@/utils/constants/constants";
 import { ROUTES } from "@/utils/constants/routePaths";
 import useModalStore from "@/utils/hooks/store/useModalStore";
@@ -54,11 +59,13 @@ export const LoginForm = () => {
     postRefreshToken().then((res) => console.log("res", res));
   };
 
-  // 로그아웃 로직
-  /*   const logout = () => {
-    useAuthStore.getState().logout();
-    // 추가적인 로그아웃 후 처리
-  }; */
+  const handleTest2 = () => {
+    getUsersMe().then((res) => console.log("res", res));
+  };
+
+  const handleTest3 = () => {
+    getHello().then((res) => console.log("res", res));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -135,7 +142,11 @@ export const LoginForm = () => {
                   </div>
                 </div>
               </form>
-              <button onClick={handleTest}>test b</button>
+              <div className="flex gap-4">
+                <button onClick={handleTest}>test refresh</button>
+                <button onClick={handleTest2}>test auth api</button>
+                <button onClick={handleTest3}>get hello</button>
+              </div>
             </div>
           </div>
         </div>

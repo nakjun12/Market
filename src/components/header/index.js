@@ -1,7 +1,9 @@
+import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import { Bars3Icon } from "@heroicons/react/16/solid";
 import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 
 export default function Header() {
+  const auth = useAuthStore();
   return (
     <div className="navbar bg-base-200">
       <div className="navbar-start">
@@ -56,7 +58,7 @@ export default function Header() {
               <a>Settings</a>
             </li>
             <li>
-              <a>Logout</a>
+              <div onClick={auth.logout}>Logout</div>
             </li>
           </ul>
         </div>
