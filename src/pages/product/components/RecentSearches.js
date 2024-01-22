@@ -24,7 +24,7 @@ const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
           <div>
             {recentSearches.map((search, index) => (
               <RecentWordBadge
-                className="badge badge-secondary badge-md"
+                className="badge badge-primary badge-md"
                 key={index}
                 onClick={() => handleSearchSubmit(search)}>
                 {search.length > 6 ? `${search.slice(0, 5)}..` : search}

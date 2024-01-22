@@ -5,8 +5,8 @@ import ProductsPage from "@/pages/product/ProductsPage";
 import { ROUTES } from "@/utils/constants/routePaths";
 import { createBrowserRouter } from "react-router-dom";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
-import ProductsSearchPage from "./pages/search/ProductsSearchPage";
-import ProductsSearchResult from "./pages/search/ProductSearchResult";
+import ProductsSearchPage from "./pages/product/ProductsSearchPage";
+import ProductSearchResultPage from "./pages/product/ProductSearchResultPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { JoinPage } from "./pages/join/JoinPage";
 
@@ -23,7 +23,7 @@ export const routeConfig = [
   { path: ROUTES.HOME, element: <ProductsPage />, index: true },
   { path: ROUTES.PRODUCT, element: <ProductDetailPage /> },
   { path: ROUTES.SEARCH, element: <ProductsSearchPage /> },
-  { path: ROUTES.SEARCH_RESULT, element: <ProductsSearchResult /> },
+  { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
   { path: ROUTES.JOIN, element: <JoinPage /> },
 
