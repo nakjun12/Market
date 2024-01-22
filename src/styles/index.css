@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @font-face 규칙 추가 */
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  font-family: "Pretendard-Regular", sans-serif;
+  --pretendard: "Pretendard-Regular", sans-serif;
+}
+
 @layer base {
   /* 기본 마진과 패딩 제거 */
   body,
@@ -21,7 +35,7 @@
 
   /* 바디 스타일 */
   body {
-    @apply bg-white font-sans text-gray-900;
+    font-family: "Pretendard-Regular", sans-serif;
   }
 
   /* 모든 박스에 border-box 적용 */
