@@ -66,7 +66,9 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                     key={index}
                     ref={lastProductRef}
                     className="productCard"
-                    onClick={() => handleProductPage(product.id)}>
+                    // onClick={() => handleProductPage(product.id)}
+                  >
+                    {/* 추후에 상품 디테일 페이지에 연결 ! */}
                     <CardImg src={product.imgUrl} alt={product.title} />
                     <ProductTitle>{product.title}</ProductTitle>
                   </Card>
@@ -76,7 +78,9 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                   <Card
                     key={index}
                     className="productCard"
-                    onClick={() => handleProductPage(product.id)}>
+                    // onClick={() => handleProductPage(product.id)}
+                    /* 추후에 상품 디테일 페이지에 연결 ! */
+                  >
                     <CardImg src={product.imgUrl} alt={product.title} />
 
                     <ProductBadge>{product.content}</ProductBadge>
