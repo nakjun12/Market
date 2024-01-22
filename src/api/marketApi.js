@@ -17,8 +17,8 @@ export const getHello = () => {
 };
 
 // 받아온 회원이 입력한 정보로 회원가입
-export const postAuthSignup = ({ email, password, username }) => {
-  const response = marketApi.post("/auth/signup", {
+export const postAuthSignup = async ({ email, password, username }) => {
+  const response = await marketApi.post("/auth/signup", {
     email,
     password,
     username
@@ -27,18 +27,17 @@ export const postAuthSignup = ({ email, password, username }) => {
 };
 
 // 사용자가 입력한 정보로 로그인
-export const postAuthLogin = ({ email, password }) => {
-  const response = marketApi.post("/auth/login", {
+export const postAuthLogin = async ({ email, password }) => {
+  const response = await marketApi.post("/auth/login", {
     email,
     password
   });
-  console.log("response", response);
   return response.data;
 };
 
 // 토큰 리프레쉬
-export const postRefreshToken = () => {
-  return marketApi.post("/auth/refresh-token");
+export const postRefreshToken = async () => {
+  return await marketApi.post("/auth/refresh-token");
 };
 
 //
