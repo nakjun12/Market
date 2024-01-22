@@ -47,8 +47,6 @@ marketApi.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰 요청 실패 시 로그아웃 처리
         useAuthStore.getState().logout();
-        alert("인증이 필요한 작업입니다.");
-
         return Promise.reject(refreshError);
       }
     }
@@ -105,7 +103,7 @@ export const getAuthProfile = async () => {
   return await marketApi.get("/auth/profile", { requiresAuth: true });
 };
 
-//
+//내 정보 가져오기
 export const getUsersMe = async () => {
   return await marketApi.get("/users/me", { requiresAuth: true });
 };

@@ -1,9 +1,4 @@
-import {
-  getHello,
-  getUsersMe,
-  postAuthLogin,
-  postRefreshToken
-} from "@/api/marketApi";
+import { postAuthLogin } from "@/api/marketApi";
 import { PASSWORD_REGEX } from "@/utils/constants/constants";
 import { ROUTES } from "@/utils/constants/routePaths";
 import useModalStore from "@/utils/hooks/store/useModalStore";
@@ -53,18 +48,6 @@ export const LoginForm = () => {
       </>
     );
     openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
-  };
-
-  const handleTest = () => {
-    postRefreshToken().then((res) => console.log("res", res));
-  };
-
-  const handleTest2 = () => {
-    getUsersMe().then((res) => console.log("res", res));
-  };
-
-  const handleTest3 = () => {
-    getHello().then((res) => console.log("res", res));
   };
 
   const handleSubmit = async (event) => {
@@ -142,11 +125,6 @@ export const LoginForm = () => {
                   </div>
                 </div>
               </form>
-              <div className="flex gap-4">
-                <button onClick={handleTest}>test refresh</button>
-                <button onClick={handleTest2}>test auth api</button>
-                <button onClick={handleTest3}>get hello</button>
-              </div>
             </div>
           </div>
         </div>
