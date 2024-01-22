@@ -23,7 +23,9 @@ export const ROUTES = {
   ALL_PRODUCTS: "/web/products/all", // 모든 제품 목록 페이지 라우트
   CATEGORY_PRODUCTS: "/web/products/:categoryId", // 카테고리별 제품 목록 페이지 라우트 (동적 파라미터)
   NOT_FOUND: "*", // 일치하는 라우트가 없을 때 표시될 페이지 (404 페이지 등)
-  POST: "/web/post", // 게시물 생성 또는 표시 페이지 라우트
-  TEST: "/web/test", // 테스트 페이지 라우트
-  AUTH: "/web/auth" // 인증 관련 페이지 라우트
+  POST: "/post", // 게시물 생성 또는 표시 페이지 라우트
+  TEST: "/test", // 테스트 페이지 라우트
+  AUTH: "/auth", // 인증 관련 페이지 라우트
+  SEARCH: "/search", // 검색 페이지
+  SEARCH_RESULT: "/search/:keyword"
 };

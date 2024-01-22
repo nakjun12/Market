@@ -15,19 +15,18 @@ import Popup from "./Popup";
  *
  * @returns {JSX.Element} 모달 컴포넌트.
  */
-export const Modal = () => {
+const Modal = () => {
   const { isOpen, content, closeOnBackdrop, closeModal } = useModalStore();
 
   const closePopup = closeOnBackdrop ? closeModal : null;
   return (
-    <Popup
-      isOpen={isOpen}
-      closePopup={closePopup}
-      onClick={(e) => e.stopPropagation()}>
+    <Popup isOpen={isOpen} closePopup={closePopup}>
       {content}
     </Popup>
   );
 };
+
+export default Modal;
 
 //모달 컨텐츠 스타일 정의
 const ModalContent = styled.div`

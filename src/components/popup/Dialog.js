@@ -92,8 +92,10 @@ const dialogStyle = (isOpen) => css`
  *
  * return (
  *   <div>
- *     <button onClick={openModal}>모달 열기</button>
- *     <Dialog isOpen={isModalOpen} onBackdropClick={handleBackdropClick}>
+ *     <button onClick={penDialog}>모달 열기</button>
+ *
+ *      onBackdropClick은 백그라운드 클릭시 재생할 함수입니다
+ *     <Dialog isOpen={isDialogOpen} onBackdropClick={closeDialog}>
  *       <div>모달 컨텐츠</div>
  *     </Dialog>
  *   </div>
