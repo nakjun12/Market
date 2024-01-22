@@ -43,17 +43,24 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const { scrollTop, clientHeight, scrollHeight } = loaderRef.current;
+      if (loaderRef.current) {
+        const { scrollTop, clientHeight, scrollHeight } = loaderRef.current;
 
-      if (scrollHeight - scrollTop === clientHeight) {
-        fetchMoreData();
+        if (scrollHeight - scrollTop === clientHeight) {
+          fetchMoreData();
+        }
       }
     };
 
-    loaderRef.current.addEventListener("scroll", handleScroll);
+    if (loaderRef.current) {
+      // 값이 없는 경우(null) 페이지 이동 시 에러 발생하기 때문에 null이 아닐때만 동작하도록 함
+      loaderRef.current.addEventListener("scroll", handleScroll);
+    }
 
     return () => {
-      loaderRef.current.removeEventListener("scroll", handleScroll);
+      if (loaderRef.current) {
+        loaderRef.current.removeEventListener("scroll", handleScroll);
+      }
     };
   }, [fetchMoreData]);
 
