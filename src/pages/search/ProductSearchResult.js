@@ -5,7 +5,7 @@ import { getPublishedPosts } from "@/api/marketApi";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import ProductList from "./components/ProductList";
+import ProductList from "../product/components/ProductList";
 
 const ProductSearchResult = () => {
   const { keyword } = useParams(); // 검색어

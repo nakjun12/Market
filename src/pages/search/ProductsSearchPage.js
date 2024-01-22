@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import RecentSearches from "./RecentSearches";
+
 import { useNavigate } from "react-router-dom";
+import RecentSearches from "./components/RecentSearches";
 
 const ProductsSearchPage = () => {
   const navigate = useNavigate();
