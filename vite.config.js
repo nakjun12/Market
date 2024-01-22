@@ -50,14 +50,6 @@ export default defineConfig({
     port: 8080,
     strictPort: true,
     host: true,
-    origin: "http://0.0.0.0:8080",
-    proxy: {
-      // 모든 요청을 https://pinemarket.cielui.com/web 으로 프록시합니다.
-      "/": {
-        target: "https://pinemarket.cielui.com/",
-        changeOrigin: true,
-        secure: false
-      }
-    }
+    origin: "http://0.0.0.0:8080"
   }
 });
