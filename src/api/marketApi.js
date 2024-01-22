@@ -29,18 +29,30 @@ marketApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    // 401 오류 발생 시 (토큰 만료 등) 한 번만 재시도
-    if (error.response.status === 401 && !originalRequest._retry) {
+    // 리프레시 토큰 요청에서의 401 오류인지 확인
+    const isRefreshTokenRequest = originalRequest.url === "/auth/refresh-token";
+
+    // 401 인증에러 + 재요청이 아닐때 + refreshToken에 대한 요청이 아닐 떄
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !isRefreshTokenRequest
+    ) {
       originalRequest._retry = true;
       try {
-        const { data } = await marketApi.post("/auth/refresh-token"); // 리프레시 토큰으로 새 액세스 토큰 요청
-        useAuthStore.getState().setAccessToken(data.accessToken); // 새 토큰을 스토어에 저장
-        return marketApi(originalRequest); // 원래 요청 재실행
+        const { data } = await marketApi.post("/auth/refresh-token");
+        useAuthStore.getState().setAccessToken(data.accessToken);
+        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        return marketApi(originalRequest);
       } catch (refreshError) {
-        return Promise.reject(refreshError); // 리프레시 토큰 요청 오류 처리
+        // 리프레시 토큰 요청 실패 시 로그아웃 처리
+        useAuthStore.getState().logout();
+        alert("인증이 필요한 작업입니다.");
+
+        return Promise.reject(refreshError);
       }
     }
-    return Promise.reject(error); // 기타 응답 오류 처리
+    return Promise.reject(error);
   }
 );
 
@@ -99,13 +111,15 @@ export const getUsersMe = async () => {
 };
 
 // 유저 정보 업데이트
-export const updateUser = (name) => {
-  return marketApi.put("/users/update", name);
+export const updateUser = async (name) => {
+  return await marketApi.put("/users/update", name, { requiresAuth: true });
 };
 
 // 유저 비밀번호 변경
-export const changePassword = (pwData) => {
-  return marketApi.put("/users/change-password", pwData);
+export const changePassword = async (pwData) => {
+  return await marketApi.put("/users/change-password", pwData, {
+    requiresAuth: true
+  });
 };
 
 /**
@@ -113,8 +127,8 @@ export const changePassword = (pwData) => {
  *
  */
 // 새 게시물 등록
-export const postPosts = (postData) => {
-  return marketApi.post("/posts", postData);
+export const postPosts = async (postData) => {
+  return await marketApi.post("/posts", postData, { requiresAuth: true });
 };
 
 // 검색 조건에 따라 게시물 가져오기
