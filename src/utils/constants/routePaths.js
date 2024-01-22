@@ -12,7 +12,7 @@
  * <Route path={ROUTES.PRODUCT} component={ProductPage} />
  */
 export const ROUTES = {
-  HOME: "/web/", // 홈페이지 라우트
+  HOME: "/web", // 홈페이지 라우트
   LOGIN: "/web/login", // 로그인 페이지 라우트
   JOIN: "/web/join", // 회원가입 페이지 라우트
   PRODUCT: "/web/product/:productid", // 개별 제품 상세 페이지 라우트 (동적 파라미터)
