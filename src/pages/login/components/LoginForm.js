@@ -1,4 +1,4 @@
-import { postAuthLogin } from "@/api/marketApi";
+import { postAuthLogin, postRefreshToken } from "@/api/marketApi";
 import { PASSWORD_REGEX } from "@/utils/constants/constants";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import { useMutation } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export const LoginForm = () => {
   const navigate = useNavigate();
   const { openModal, closeModal } = useModalStore();
+  // onError 부분 통신 실패시에도 success로 가는거 확인하기
   const { mutate, isPending } = useMutation({
     mutationFn: postAuthLogin,
     onSuccess: () => {
@@ -18,6 +19,7 @@ export const LoginForm = () => {
   });
 
   const openCustomPopup = ({ process }) => {
+    console.log("process", process);
     const handleConfirm = () => {
       // 성공 실패시
       if (process) {
@@ -47,6 +49,10 @@ export const LoginForm = () => {
       </>
     );
     openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
+  };
+
+  const handleTest = () => {
+    postRefreshToken().then((res) => console.log("res", res));
   };
 
   const handleSubmit = async (event) => {
@@ -124,6 +130,7 @@ export const LoginForm = () => {
                   </div>
                 </div>
               </form>
+              <button onClick={handleTest}>test b</button>
             </div>
           </div>
         </div>

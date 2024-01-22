@@ -6,6 +6,7 @@ import { defineConfig, transformWithEsbuild } from "vite";
 const currentDir = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  base: "/web",
   plugins: [
     //jsx -> js 변환 세팅
     {
@@ -40,5 +41,15 @@ export default defineConfig({
     alias: {
       "@": resolve(currentDir, "src") // '@'를 src 폴더의 절대 경로로 설정
     }
+  },
+  preview: {
+    port: 8080,
+    strictPort: true
+  },
+  server: {
+    port: 8080,
+    strictPort: true,
+    host: true,
+    origin: "http://0.0.0.0:8080"
   }
 });
