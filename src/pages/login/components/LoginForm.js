@@ -54,6 +54,12 @@ export const LoginForm = () => {
     postRefreshToken().then((res) => console.log("res", res));
   };
 
+  // 로그아웃 로직
+  /*   const logout = () => {
+    useAuthStore.getState().logout();
+    // 추가적인 로그아웃 후 처리
+  }; */
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 

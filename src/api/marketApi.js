@@ -1,3 +1,4 @@
+import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import axios from "axios";
 
 const baseURL = "https://pinemarket.cielui.com";
@@ -6,6 +7,19 @@ const marketApi = axios.create({
   baseURL,
   withCredentials: true
 });
+
+marketApi.interceptors.request.use(
+  (config) => {
+    const { accessToken } = useAuthStore.getState();
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 /**
  * 사용자 (user)에 관련된 정보를 이용한 api입니다.
@@ -23,6 +37,7 @@ export const postAuthSignup = async ({ email, password, username }) => {
     password,
     username
   });
+  useAuthStore.getState().setAccessToken(response.data.accessToken);
   return response.data;
 };
 
@@ -32,12 +47,15 @@ export const postAuthLogin = async ({ email, password }) => {
     email,
     password
   });
+  useAuthStore.getState().setAccessToken(response.data.accessToken);
   return response.data;
 };
 
-// 토큰 리프레쉬
+// 토큰 리프레쉬 (cookie의 refresh토큰 사용 없을 경우 401에러)
 export const postRefreshToken = async () => {
-  return await marketApi.post("/auth/refresh-token");
+  const response = marketApi.post("/auth/refresh-token");
+  useAuthStore.getState().setAccessToken(response.data.accessToken);
+  return await response.data;
 };
 
 //
