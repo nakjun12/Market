@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { SuspenseController } from "./SuspenseController";
 import Footer from "./footer";
 import Header from "./header";
-// import { Popup } from "./popup";
+import { Modal } from "./popup/Modal";
 
 const DelayedComponent = lazy(() =>
   SuspenseController(import("./SuspenseController"), 3000)
@@ -22,7 +22,7 @@ export default function WithLayout() {
   return (
     <div className="flex flex-col justify-between h-screen">
       <Header />
-      {/* <Popup /> */}
+      <Modal />
       <Suspense fallback={<div>대기중</div>}>
         {/* <DelayedComponent /> */}
         {/* Outlet 컴포넌트는 현재 경로에 매칭되는 중첩된 라우트의 컴포넌트를 렌더링합니다.

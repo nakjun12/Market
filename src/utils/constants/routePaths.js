@@ -14,6 +14,7 @@
 export const ROUTES = {
   HOME: "/", // 홈페이지 라우트
   LOGIN: "/login", // 로그인 페이지 라우트
+  JOIN: "/join", // 회원가입 페이지 라우트
   PRODUCT: "/product/:productid", // 개별 제품 상세 페이지 라우트 (동적 파라미터)
   PRODUCTS: "/products", // 제품 목록 페이지 라우트
   MYPAGE: "/mypage", // 사용자 마이페이지 라우트
