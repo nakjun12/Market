@@ -1,5 +1,6 @@
-import { postAuthLogin, postRefreshToken } from "@/api/marketApi";
+import { postAuthLogin } from "@/api/marketApi";
 import { PASSWORD_REGEX } from "@/utils/constants/constants";
+import { ROUTES } from "@/utils/constants/routePaths";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -11,19 +12,21 @@ export const LoginForm = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: postAuthLogin,
     onSuccess: () => {
-      openCustomPopup({ process: true });
+      openCustomPopup({
+        process: true,
+        message: "로그인에 성공했습니다. 확인으로 메인페이지로 이동합니다."
+      });
     },
-    onError: () => {
-      openCustomPopup({ process: false });
+    onError: (error) => {
+      openCustomPopup({ process: false, message: error.response.data.message });
     }
   });
 
-  const openCustomPopup = ({ process }) => {
-    console.log("process", process);
+  const openCustomPopup = ({ process, message }) => {
     const handleConfirm = () => {
       // 성공 실패시
       if (process) {
-        navigate("/");
+        navigate(ROUTES.HOME);
       } else {
         closeModal();
       }
@@ -35,11 +38,7 @@ export const LoginForm = () => {
           <h3 className="font-bold text-lg">
             로그인에 {process ? "성공" : "실패"} 했습니다.
           </h3>
-          {process ? (
-            <p className="py-4">확인 버튼 클릭으로 홈으로 이동합니다.</p>
-          ) : (
-            <p className="py-4">다시 시도해 주시기 바랍니다.</p>
-          )}
+          <p className="py-4">{message}</p>
           <div className="modal-action">
             <button className="btn" onClick={handleConfirm}>
               확인
@@ -49,10 +48,6 @@ export const LoginForm = () => {
       </>
     );
     openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
-  };
-
-  const handleTest = () => {
-    postRefreshToken().then((res) => console.log("res", res));
   };
 
   const handleSubmit = async (event) => {
@@ -130,7 +125,6 @@ export const LoginForm = () => {
                   </div>
                 </div>
               </form>
-              <button onClick={handleTest}>test b</button>
             </div>
           </div>
         </div>
