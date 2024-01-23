@@ -8,7 +8,8 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
     "plugin:cypress/recommended",
-    "plugin:vitest/recommended"
+    "plugin:vitest/recommended",
+    "plugin:storybook/recommended"
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
