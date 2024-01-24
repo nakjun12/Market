@@ -12,7 +12,11 @@ jobs:
     # Job steps
     steps:
       - uses: actions/checkout@v1
-      - run: pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies with pnpm
+        run: pnpm
         #👇 Adds Chromatic as a step in the workflow
       - uses: chromaui/action@v1
         # Options required for Chromatic's GitHub Action
