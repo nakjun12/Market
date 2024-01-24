@@ -16,7 +16,7 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies with pnpm
-        run: pnpm
+        run: pnpm install
         #👇 Adds Chromatic as a step in the workflow
       - uses: chromaui/action@v1
         # Options required for Chromatic's GitHub Action
