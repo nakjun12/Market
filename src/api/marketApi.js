@@ -138,7 +138,7 @@ export const getPublishedPosts = ({
   orderBy,
   direction
 }) => {
-  return marketApi.get("/posts/published", {
+  return marketApi.get("/posts/list", {
     params: {
       page,
       limit,
