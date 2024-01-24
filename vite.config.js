@@ -41,15 +41,5 @@ export default defineConfig({
     alias: {
       "@": resolve(currentDir, "src") // '@'를 src 폴더의 절대 경로로 설정
     }
-  },
-  preview: {
-    port: 8080,
-    strictPort: true
-  },
-  server: {
-    port: 8080,
-    strictPort: true,
-    host: true,
-    origin: "http://0.0.0.0:8080"
   }
 });
