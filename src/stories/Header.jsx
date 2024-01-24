@@ -8,9 +8,9 @@ export const Header = ({ user, onLogin, onLogout, onCreateAccount }) => (
     <div className="storybook-header">
       <div>
         <svg
-          width="60"
-          height="60"
-          viewBox="0 0 60 60"
+          width="32"
+          height="32"
+          viewBox="0 0 32 32"
           xmlns="http://www.w3.org/2000/svg">
           <g fill="none" fillRule="evenodd">
             <path

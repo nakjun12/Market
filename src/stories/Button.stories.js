@@ -41,15 +41,13 @@ export const Large = {
 export const Small = {
   args: {
     size: "small",
-    label: "Button",
-    backgroundColor: "blue"
+    label: "Button"
   }
 };
 
 export const Warning = {
   args: {
     primary: true,
-    label: "Delete now",
-    backgroundColor: "red"
+    label: "Delete now"
   }
 };
