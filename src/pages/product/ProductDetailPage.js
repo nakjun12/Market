@@ -1,4 +1,3 @@
-import { getPublishedPosts } from "@/api/marketApi";
 import ProductImageCarousel from "@/components/carousel/ProductImageCarousel";
 import Dialog from "@/components/popup/Dialog";
 import useModalStore from "@/utils/hooks/store/useModalStore";
@@ -11,14 +10,14 @@ const images = [
 ];
 
 export default function ProductDetailPage() {
-  console.log(getPublishedPosts().then((e) => console.log(e)));
+  // console.log(getPublishedPosts().then((e) => console.log(e)));
   const { openModal, closeModal } = useModalStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
   const openCustomPopup = ({ process }) => {
     const customContent = (
-      <>
+      <div>
         <div className="modal-box">
           <h3 className="font-bold text-lg">
             가입에 {process ? "성공" : "실패"} 했습니다.
@@ -34,7 +33,7 @@ export default function ProductDetailPage() {
             <button className="btn">확인</button>
           </div>
         </div>
-      </>
+      </div>
     );
     openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
   };

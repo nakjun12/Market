@@ -43,14 +43,14 @@ export default function Dialog({ isOpen, onBackdropClick = null, children }) {
 
     if (onBackdropClick) {
       // onBackdropClick가 true일 때만 이벤트 리스너를 추가합니다.
-      dialogRef.current.addEventListener("click", handleBackdropClick);
+      dialogRef.current?.addEventListener("click", handleBackdropClick);
     }
 
     // 컴포넌트 언마운트 시 이벤트 리스너를 정리합니다.
     return () => {
       if (onBackdropClick) {
         // 컴포넌트 언마운트 시 이벤트 리스너를 정리합니다.
-        dialogRef.current.removeEventListener("click", handleBackdropClick);
+        dialogRef.current?.removeEventListener("click", handleBackdropClick);
       }
     };
   }, [isOpen]);
