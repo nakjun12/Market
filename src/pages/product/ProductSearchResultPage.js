@@ -1,15 +1,15 @@
-import { useEffect } from "react";
-import ProductList from "./components/ProductList";
-import styled from "@emotion/styled";
-import { useState } from "react";
-import { useRef } from "react";
-import { getPublishedPosts } from "@/api/marketApi";
+// ProductSearchResult.js
 
-// 처음 진입하면 보이는 메인 페이지
-// api를 호출하여 ProcudtList에 정보를 넘겨서 보여주도록 함
-// 스크롤을 통해 더 많은 상품을 동적으로 로드
-export default function ProductsPage() {
-  const [productList, setProductList] = useState([]);
+import styled from "@emotion/styled";
+import { getPublishedPosts } from "@/api/marketApi";
+import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import ProductList from "./components/ProductList";
+
+const ProductSearchResultPage = () => {
+  const { keyword } = useParams(); // 검색어
+  const [productList, setProductList] = useState(); // 넘겨줄 상품 리스트 배열
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
@@ -22,8 +22,8 @@ export default function ProductsPage() {
       setLoading(true);
       const resData = await getPublishedPosts({
         page: page !== 1 ? page + 1 : page,
-        limit: 10,
-        query: "",
+        limit: 16,
+        query: keyword ? keyword : "",
         orderBy: "createdAt",
         direction: "asc"
       });
@@ -40,6 +40,10 @@ export default function ProductsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    searchApi(keyword);
+  }, [keyword]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,13 +68,28 @@ export default function ProductsPage() {
     };
   }, [fetchMoreData]);
 
-  useEffect(() => {
-    fetchMoreData();
-  }, []);
+  const searchApi = async (keyword) => {
+    try {
+      const resData = await getPublishedPosts({
+        page: 1,
+        limit: 10,
+        query: keyword ? keyword : "",
+        orderBy: "createdAt",
+        direction: "asc"
+      });
+
+      setProductList(resData.data.data);
+    } catch (error) {
+      console.error("검색 API 호출 실패:", error);
+    }
+  };
 
   return (
     <div>
-      <ProductPageText>원하시는 상품을 찾아보세요.</ProductPageText>
+      <SearchResultText>
+        다음은 <span style={{ color: "black" }}>{keyword}</span>에 대한 검색
+        결과입니다.
+      </SearchResultText>
 
       <ProductList
         productList={productList}
@@ -84,12 +103,15 @@ export default function ProductsPage() {
       <div ref={loaderRef}></div>
     </div>
   );
-}
+};
 
-const ProductPageText = styled.h1`
+export default ProductSearchResultPage;
+
+const SearchResultText = styled.h1`
   text-align: center;
-  margin-top: 20px;
+  margin-top: 10px;
+  padding: 20px;
   font-size: 18px;
   font-weight: 700;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0, 0.7);
 `;
