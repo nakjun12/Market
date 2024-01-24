@@ -12,8 +12,6 @@ const marketApi = axios.create({
 marketApi.interceptors.request.use(
   (config) => {
     const { accessToken } = useAuthStore.getState(); // useAuthStore에서 액세스 토큰 가져오기
-    console.log("accessToken", accessToken);
-    console.log("config.requiresAuth", config.requiresAuth);
     if (config.requiresAuth && accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`; // 액세스 토큰이 있으면 요청 헤더에 추가
     }
