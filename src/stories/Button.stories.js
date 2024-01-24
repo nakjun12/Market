@@ -33,14 +33,16 @@ export const Secondary = {
 export const Large = {
   args: {
     size: "large",
-    label: "Button"
+    label: "Button",
+    backgroundColor: "black"
   }
 };
 
 export const Small = {
   args: {
     size: "small",
-    label: "Button"
+    label: "Button",
+    backgroundColor: "blue"
   }
 };
 
