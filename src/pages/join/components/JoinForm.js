@@ -155,7 +155,7 @@ export const JoinForm = () => {
                     이미 회원 가입하셨나요?
                   </p>
                   <div
-                    onClick={() => navigate(ROUTES.LOGIN)}
+                    onClick={() => navigate(ROUTES.HOME + "/" + ROUTES.LOGIN)}
                     className="text-blue-500 font-black hover:underline">
                     Login here
                   </div>

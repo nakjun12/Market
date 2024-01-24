@@ -119,7 +119,7 @@ export const LoginForm = () => {
                     가입이 필요하신가요?
                   </p>
                   <div
-                    onClick={() => navigate(ROUTES.JOIN)}
+                    onClick={() => navigate(ROUTES.HOME + "/" + ROUTES.JOIN)}
                     className="text-blue-500 font-black hover:underline">
                     Join here
                   </div>
