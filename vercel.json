@@ -1,5 +1,15 @@
 {
   "version": 2,
+  "rewrites": [
+    {
+      "source": "/web/(.*)",
+      "destination": "/$1"
+    },
+    {
+      "source": "/web",
+      "destination": "/"
+    }
+  ],
   "redirects": [
     {
       "source": "/",
