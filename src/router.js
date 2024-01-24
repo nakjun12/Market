@@ -7,8 +7,8 @@ import { createBrowserRouter } from "react-router-dom";
 import { JoinPage } from "./pages/join/JoinPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
-import ProductsSearchResult from "./pages/search/ProductSearchResult";
-import ProductsSearchPage from "./pages/search/ProductsSearchPage";
+import ProductsSearchPage from "./pages/product/ProductsSearchPage";
+import ProductSearchResultPage from "./pages/product/ProductSearchResultPage";
 
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
 // 현재는 직접 임포트를 사용하고 있지만, 나중에 필요시 아래의 코드로 대체할 수 있습니다.
@@ -23,7 +23,7 @@ export const routeConfig = [
   { path: ROUTES.HOME, element: <ProductsPage />, index: true },
   { path: ROUTES.PRODUCT, element: <ProductDetailPage /> },
   { path: ROUTES.SEARCH, element: <ProductsSearchPage /> },
-  { path: ROUTES.SEARCH_RESULT, element: <ProductsSearchResult /> },
+  { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
   { path: ROUTES.JOIN, element: <JoinPage /> },
 

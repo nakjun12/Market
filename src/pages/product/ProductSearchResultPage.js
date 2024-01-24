@@ -5,9 +5,9 @@ import { getPublishedPosts } from "@/api/marketApi";
 import { useState } from "react";
 import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import ProductList from "../product/components/ProductList";
+import ProductList from "./components/ProductList";
 
-const ProductSearchResult = () => {
+const ProductSearchResultPage = () => {
   const { keyword } = useParams(); // 검색어
   const [productList, setProductList] = useState(); // 넘겨줄 상품 리스트 배열
   const [loading, setLoading] = useState(false);
@@ -105,7 +105,7 @@ const ProductSearchResult = () => {
   );
 };
 
-export default ProductSearchResult;
+export default ProductSearchResultPage;
 
 const SearchResultText = styled.h1`
   text-align: center;
