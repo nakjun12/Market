@@ -130,6 +130,7 @@ export const postPosts = async (postData) => {
 };
 
 // 검색 조건에 따라 게시물 가져오기
+
 export const getPublishedPosts = ({
   page,
   limit,
