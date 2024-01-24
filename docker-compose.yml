@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  pinemarket:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TAG: "0.1v"
+    image: "pinemarket:0.1v"
+    ports:
+      - "8080:8080"
+    command: npm run preview
+    networks:
+      - pinemarket_api
+
+networks:
+  pinemarket_api:
+    external: true
