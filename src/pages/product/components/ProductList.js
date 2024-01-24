@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useCallback } from "react";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
 
@@ -69,7 +68,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                     // onClick={() => handleProductPage(product.id)}
                   >
                     {/* 추후에 상품 디테일 페이지에 연결 ! */}
-                    <CardImg src={product.imgUrl} alt={product.title} />
+                    <CardImg src={product.imgUrls[0]} alt={product.title} />
                     <ProductTitle>{product.title}</ProductTitle>
                   </Card>
                 );
@@ -81,7 +80,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                     // onClick={() => handleProductPage(product.id)}
                     /* 추후에 상품 디테일 페이지에 연결 ! */
                   >
-                    <CardImg src={product.imgUrl} alt={product.title} />
+                    <CardImg src={product.imgUrls[0]} alt={product.title} />
 
                     <ProductBadge>{product.content}</ProductBadge>
                     <ProductTitle>{product.title}</ProductTitle>
