@@ -56,51 +56,34 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
 
   return (
     <ProductListWrap>
-      {productList && productList.length > 0 ? (
-        <>
-          <CardWrap>
-            {productList.map((product, index) => {
-              if (productList.length === index + 1) {
-                return (
-                  <Card
-                    key={index}
-                    ref={lastProductRef}
-                    className="productCard"
-                    // onClick={() => handleProductPage(product.id)}
-                  >
-                    {/* 추후에 상품 디테일 페이지에 연결 ! */}
-                    <CardImg src={product.imgUrl} alt={product.title} />
-                    <ProductTitle>{product.title}</ProductTitle>
-                  </Card>
-                );
-              } else {
-                return (
-                  <Card
-                    key={index}
-                    className="productCard"
-                    // onClick={() => handleProductPage(product.id)}
-                    /* 추후에 상품 디테일 페이지에 연결 ! */
-                  >
-                    <CardImg src={product.imgUrl} alt={product.title} />
-
-                    <ProductBadge>{product.content}</ProductBadge>
-                    <ProductTitle>{product.title}</ProductTitle>
-                  </Card>
-                );
-              }
-            })}
-          </CardWrap>
+      {loading && <NoticeMsg>로딩 중...</NoticeMsg>}
+      {!loading && productList && productList.length > 0 && (
+        <CardWrap>
+          {productList.map((product, index) => (
+            <Card
+              key={index}
+              ref={index === productList.length - 1 ? lastProductRef : null}
+              className="productCard"
+              // onClick={() => handleProductPage(product.id)}
+            >
+              {/* 추후에 상품 디테일 페이지에 연결 ! */}
+              <CardImg src={product.imgUrl} alt={product.title} />
+              {index !== productList.length - 1 && (
+                <ProductBadge>{product.content}</ProductBadge>
+              )}
+              <ProductTitle>{product.title}</ProductTitle>
+            </Card>
+          ))}
           <TopButton
             className="btn btn-neutral"
             show={showTopButton}
             onClick={scrollToTop}>
             TOP
           </TopButton>
-        </>
-      ) : (
-        <NoticeMsg>
-          {productList ? "상품이 없습니다." : "상품을 불러오는 중입니다..."}
-        </NoticeMsg>
+        </CardWrap>
+      )}
+      {!loading && (!productList || productList.length === 0) && (
+        <NoticeMsg>상품이 없습니다.</NoticeMsg>
       )}
     </ProductListWrap>
   );

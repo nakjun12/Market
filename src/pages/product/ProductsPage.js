@@ -79,8 +79,6 @@ export default function ProductsPage() {
         hasMore={hasMore}
       />
 
-      {loading && <div>로딩 중...</div>}
-      {!loading && !hasMore && <div>더 이상 아이템이 없습니다.</div>}
       <div ref={loaderRef}></div>
     </div>
   );
