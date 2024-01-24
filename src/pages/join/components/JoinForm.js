@@ -1,5 +1,6 @@
 import { postAuthSignup } from "@/api/marketApi";
 import { PASSWORD_REGEX } from "@/utils/constants/constants";
+import { ROUTES } from "@/utils/constants/routePaths";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -10,18 +11,21 @@ export const JoinForm = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: postAuthSignup,
     onSuccess: () => {
-      openCustomPopup({ process: true });
+      openCustomPopup({
+        process: true,
+        message: "가입에 성공했습니다. 확인으로 메인페이지로 이동합니다."
+      });
     },
-    onError: () => {
-      openCustomPopup({ process: false });
+    onError: (error) => {
+      openCustomPopup({ process: false, message: error.response.data.message });
     }
   });
 
-  const openCustomPopup = ({ process }) => {
+  const openCustomPopup = ({ process, message }) => {
     const handleConfirm = () => {
       // 성공 실패시
       if (process) {
-        navigate("/login");
+        navigate(ROUTES.HOME);
       } else {
         closeModal();
       }
@@ -33,13 +37,7 @@ export const JoinForm = () => {
           <h3 className="font-bold text-lg">
             가입에 {process ? "성공" : "실패"} 했습니다.
           </h3>
-          {process ? (
-            <p className="py-4">
-              확인 버튼 클릭으로 로그인 페이지로 이동합니다.
-            </p>
-          ) : (
-            <p className="py-4">다시 시도해 주시기 바랍니다.</p>
-          )}
+          <p className="py-4">{message}</p>
           <div className="modal-action">
             <button className="btn" onClick={handleConfirm}>
               확인
@@ -63,7 +61,7 @@ export const JoinForm = () => {
     const username = formData.get("username");
 
     if (password !== confirmPassword) {
-      return console.log("패스워드 틀림 모달 리턴");
+      return alert("password와 confirm password가 다릅니다.");
     }
 
     mutate({ email, password, username });
