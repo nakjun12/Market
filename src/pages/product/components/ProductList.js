@@ -51,43 +51,33 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [productList]);
 
   return (
     <ProductListWrap>
       {productList && productList.length > 0 ? (
         <>
           <CardWrap>
-            {productList.map((product, index) => {
-              if (productList.length === index + 1) {
-                return (
-                  <Card
-                    key={index}
-                    ref={lastProductRef}
-                    className="productCard"
-                    // onClick={() => handleProductPage(product.id)}
-                  >
-                    {/* 추후에 상품 디테일 페이지에 연결 ! */}
-                    <CardImg src={product.imgUrls[0]} alt={product.title} />
+            {productList.map((product, index) => (
+              <Card
+                key={index}
+                ref={index === productList.length - 1 ? lastProductRef : null}
+                className="productCard"
+                // onClick={() => handleProductPage(product.id)}
+              >
+                {/* 추후에 상품 디테일 페이지에 연결 ! */}
+                <CardImg src={product.imgUrls[0]} alt={product.title} />
+                {index === productList.length - 1 ? (
+                  <ProductTitle>{product.title}</ProductTitle>
+                ) : (
+                  <>
+                    <ProductBadge>{product.location}</ProductBadge>
                     <ProductTitle>{product.title}</ProductTitle>
-                  </Card>
-                );
-              } else {
-                return (
-                  <Card
-                    key={index}
-                    className="productCard"
-                    // onClick={() => handleProductPage(product.id)}
-                    /* 추후에 상품 디테일 페이지에 연결 ! */
-                  >
-                    <CardImg src={product.imgUrls[0]} alt={product.title} />
-
-                    <ProductBadge>{product.content}</ProductBadge>
-                    <ProductTitle>{product.title}</ProductTitle>
-                  </Card>
-                );
-              }
-            })}
+                    <ProductPrice>{product.price}원</ProductPrice>
+                  </>
+                )}
+              </Card>
+            ))}
           </CardWrap>
           <TopButton
             className="btn btn-neutral"
@@ -98,7 +88,9 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
         </>
       ) : (
         <NoticeMsg>
-          {productList ? "상품이 없습니다." : "상품을 불러오는 중입니다..."}
+          {!loading && productList
+            ? "상품이 없습니다."
+            : "상품을 불러오는 중입니다..."}
         </NoticeMsg>
       )}
     </ProductListWrap>
@@ -114,37 +106,47 @@ const ProductListWrap = styled.div`
 const CardWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
+  margin-bottom: 30px;
 `;
 
 const Card = styled.div`
-  width: 48%;
-  margin: 1%;
+  width: 180px;
+  margin-bottom: 10px;
   padding: 10px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 `;
 
 const CardImg = styled.img`
+  width: 160px;
+  height: 120px;
+  background-size: cover;
   border-radius: 12px;
   margin-bottom: 5px;
 `;
 
 const ProductBadge = styled.div`
-  width: 100px;
-  height: 24px;
+  width: 50px;
+  height: 20px;
   background-color: #5cb8bc;
   color: white;
-  font-size: 14px;
+  font-size: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  margin-bottom: 4px;
+  margin: 10px 0 0 0;
+`;
+
+const ProductPrice = styled.div`
+  font-size: 14px;
 `;
 
 const ProductTitle = styled.h1`
   font-size: 16px;
   font-weight: 700;
+  margin: 5px 0;
 `;
 
 const NoticeMsg = styled.p`
