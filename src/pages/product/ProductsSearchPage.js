@@ -2,11 +2,54 @@ import { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import RecentSearches from "./components/RecentSearches";
+import useAuthStore from "@/utils/hooks/store/useAuthStore";
+import { getUsersMe } from "@/api/marketApi";
 
 const ProductsSearchPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, accessToken } = useAuthStore();
   const [inputVal, setInputVal] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const saveSearchKeyword = (word) => {
+    // 최근 검색어 저장 로직 추가
+    const existingSearches =
+      JSON.parse(localStorage.getItem("RecentSearches")) || [];
+
+    let updatedSearches;
+
+    if (isAuthenticated) {
+      // 로그인 한 사용자일 때
+      const existingTokenIndex = existingSearches.findIndex(
+        (item) => item.token === accessToken
+      );
+
+      if (existingTokenIndex !== -1) {
+        // 해당 토큰이 이미 존재하는 경우(검색 기록 O)
+        updatedSearches = existingSearches.map((item, index) =>
+          index === existingTokenIndex
+            ? {
+                token: accessToken,
+                keyword: [word, ...item.keyword]
+                  .filter((keyword, i, self) => self.indexOf(keyword) === i)
+                  .slice(0, 4)
+              }
+            : item
+        );
+      } else {
+        // 로그인 & 이전 최근 검색 기록 없는 경우
+        updatedSearches = [
+          ...existingSearches,
+          { token: accessToken, keyword: [word] }
+        ];
+      }
+    } else {
+      // 미로그인
+      updatedSearches = existingSearches.map((item) => item);
+    }
+
+    localStorage.setItem("RecentSearches", JSON.stringify(updatedSearches));
+  };
 
   const handleSearchSubmit = (current) => {
     let searchWord;
@@ -14,32 +57,19 @@ const ProductsSearchPage = () => {
     console.log("type::", typeof current);
     if (typeof current === "string") {
       // 최근 검색어를 클릭한 경우
-      console.log("최근 검색어", current);
       searchWord = current.trim();
     } else {
       if (inputVal === "") {
         // 검색어가 빈 값인 경우 처리하지 않음
-        console.log("빈 값을 입력하고 검색하는 경우 처리하지 않음");
         // 에러 팝업 또는 다른 처리를 여기에 추가
         return;
       }
       // 검색 버튼을 클릭한 경우
-      console.log("검색 버튼");
       searchWord = inputVal;
     }
 
-    // 최근 검색어 저장 로직 추가
-    const existingSearches =
-      JSON.parse(localStorage.getItem("RecentSearches")) || [];
-
-    // 최근 검색어 목록 업데이트
-    const updatedSearches = [
-      searchWord,
-      ...existingSearches.filter((item) => item !== searchWord).slice(0, 3)
-    ];
-    localStorage.setItem("RecentSearches", JSON.stringify(updatedSearches));
-
-    console.log("handleSearchSubmit inputVal::", searchWord);
+    // 최근 검색어 저장
+    saveSearchKeyword(searchWord);
 
     // 검색어 업데이트 및 초기화 + 메뉴 이동
     navigate(`/web/search/${encodeURIComponent(searchWord)}`);
@@ -47,31 +77,35 @@ const ProductsSearchPage = () => {
     setInputVal("");
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (inputVal) handleSearchSubmit();
+  };
+
   const handleSearchChange = (e) => {
     // 검색어 입력이 있을 때만 동작
-
     setInputVal(e.target.value);
   };
 
-  useEffect(() => {
-    console.log("검색된 값::", searchTerm);
-  }, [searchTerm]);
+  useEffect(() => {}, [searchTerm]);
 
   return (
     <div>
       <div className="navbar bg-base-100" style={{ padding: "15px" }}>
         <div className="navbar-start lg:flex">
           <div className="flex-none gap-2">
-            <div className="form-control">
-              <input
-                type="text"
-                placeholder="검색어를 입력하세요"
-                className="input input-bordered w-24 md:w-auto"
-                value={inputVal}
-                onChange={handleSearchChange}
-                style={{ width: "20.5rem" }}
-              />
-            </div>
+            <form onSubmit={onSubmit}>
+              <div className="form-control">
+                <input
+                  type="text"
+                  placeholder="검색어를 입력하세요"
+                  className="input input-bordered w-24 md:w-auto"
+                  value={inputVal}
+                  onChange={handleSearchChange}
+                  style={{ width: "20.5rem" }}
+                />
+              </div>
+            </form>
           </div>
         </div>
         <div className="navbar-end">

@@ -28,7 +28,7 @@ export default function ProductsPage() {
         direction: "asc"
       });
 
-      if (resData.data.data.length > 0) {
+      if (resData.data?.data?.length > 0) {
         setProductList((prevList) => [...prevList, ...resData.data.data]);
         setPage(page + 1);
       } else {
