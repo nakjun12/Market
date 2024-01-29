@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
 
 const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
   // Intersection Observer를 사용하여 마지막 상품이 보여질 때를 감지
+  const navigate = useNavigate();
   const observer = useRef();
   // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
   const [showTopButton, setShowTopButton] = useState(false);
@@ -46,6 +48,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
   };
 
   useEffect(() => {
+    console.log("list::", productList);
     window.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -63,8 +66,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
                 key={index}
                 ref={index === productList.length - 1 ? lastProductRef : null}
                 className="productCard"
-                // onClick={() => handleProductPage(product.id)}
-              >
+                onClick={() => navigate(`/web/product/${product.id}`)}>
                 {/* 추후에 상품 디테일 페이지에 연결 ! */}
                 <CardImg src={product.imgUrls[0]} alt={product.title} />
                 {index === productList.length - 1 ? (
