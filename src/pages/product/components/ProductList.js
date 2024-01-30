@@ -1,60 +1,121 @@
+import { getPublishedPosts } from "@/api/marketApi";
 import styled from "@emotion/styled";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
 
-const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
+const ProductList = (props) => {
   // Intersection Observer를 사용하여 마지막 상품이 보여질 때를 감지
+  const { keyword } = props;
   const navigate = useNavigate();
+  const [productList, setProductList] = useState([]);
+  const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
   const observer = useRef();
-  // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
-  const [showTopButton, setShowTopButton] = useState(false);
 
-  // 마지막 상품에 대한 콜백, Intersection Observer와 함께 사용
+  const getProductList = async ({ currentPage = 1, queryKey }) => {
+    const { keyword } = queryKey[1]; // Destructure the parameters from the queryKey
+    console.log("kyj currentPage::", currentPage);
+    const resData = await getPublishedPosts({
+      page: currentPage !== 1 ? currentPage + 1 : currentPage,
+      limit: 10,
+      query: keyword ? keyword : "",
+      orderBy: "createdAt",
+      direction: "asc"
+    });
+    console.log("kyj resData::", resData);
+
+    const { page, lastPage, data: responseData } = resData.data;
+    // api 호출 값에서 가지고 온 lastPage 결과
+
+    setProductList((prevList) => [...prevList, ...responseData]);
+
+    return page < lastPage ? page + 1 : 1;
+  };
+
+  const { data, error, fetchNextPage, hasNextPage, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["productList", { keyword: keyword || "" }],
+      queryFn: getProductList,
+      getNextPageParam: (curPage) => curPage
+    });
+
+  const observerOption = {
+    root: null,
+    threshold: 0.5,
+    rootMargin: "0px"
+  };
+
   const lastProductRef = useCallback(
     (node) => {
-      if (loading || !hasMore) return;
-
       if (observer.current) {
         observer.current.disconnect();
       }
 
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          fetchMoreData();
+        if (entries[0].isIntersecting && hasNextPage) {
+          setShowTopButton(true);
+          fetchNextPage();
         }
-      });
+      }, observerOption);
 
       if (node) {
         observer.current.observe(node);
       }
     },
-    [loading, hasMore, fetchMoreData]
+    [fetchNextPage, hasNextPage]
   );
 
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-
-    if (scrollY > 300) {
-      setShowTopButton(true);
-    } else {
-      setShowTopButton(false);
-    }
-  };
-
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   };
+
+  // useEffect(() => {
+  //   const handleTop = () => {
+  //     // 스크롤이 제일 상단에 가면 top 버튼 안 보이게 처리
+  //     const isTop = window.scrollY === 0;
+  //     setShowTopButton(!isTop);
+  //   };
+
+  //   window.addEventListener("scroll", handleTop);
+
+  //   return () => {
+  //     window.removeEventListener("scroll", handleTop);
+  //   };
+  // }, []);
 
   useEffect(() => {
-    console.log("list::", productList);
-    window.addEventListener("scroll", handleScroll);
+    if (error) {
+      console.error("데이터 추가 불러오기 실패:", error);
+    }
+
+    if (isFetching) {
+      console.log("로딩 중");
+      // return <div>로딩 중입니다.....</div>;
+      // 로딩 중인 상태를 표시하는 UI
+    }
+  }, [error, data, isFetching]);
+
+  useEffect(() => {
+    // 초기 데이터 로딩
+    let searchWord = keyword || "";
+
+    const handleTop = () => {
+      // 스크롤이 제일 상단에 가면 top 버튼 안 보이게 처리
+      const isTop = window.scrollY === 0;
+      setShowTopButton(!isTop);
+    };
+
+    window.addEventListener("scroll", handleTop);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleTop);
     };
-  }, [productList]);
+  }, [keyword]);
 
   return (
     <ProductListWrap>
@@ -65,9 +126,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
               <Card
                 key={index}
                 ref={index === productList.length - 1 ? lastProductRef : null}
-                className="productCard"
                 onClick={() => navigate(`/web/product/${product.id}`)}>
-                {/* 추후에 상품 디테일 페이지에 연결 ! */}
                 <CardImg src={product.imgUrls[0]} alt={product.title} />
                 {index === productList.length - 1 ? (
                   <ProductTitle>{product.title}</ProductTitle>
@@ -89,11 +148,7 @@ const ProductList = ({ productList, fetchMoreData, loading, hasMore }) => {
           </TopButton>
         </>
       ) : (
-        <NoticeMsg>
-          {!loading && productList
-            ? "상품이 없습니다."
-            : "상품을 불러오는 중입니다..."}
-        </NoticeMsg>
+        <NoticeMsg>{!productList && "상품이 없습니다."}</NoticeMsg>
       )}
     </ProductListWrap>
   );
