@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import RecentSearches from "./components/RecentSearches";
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
-import { getUsersMe } from "@/api/marketApi";
+import {
+  saveLocalStorage,
+  saveCacheStorage
+} from "@/pages/product/components/SaveSearchStorage";
 
 const ProductsSearchPage = () => {
   const navigate = useNavigate();
@@ -13,42 +15,12 @@ const ProductsSearchPage = () => {
 
   const saveSearchKeyword = (word) => {
     // 최근 검색어 저장 로직 추가
-    const existingSearches =
-      JSON.parse(localStorage.getItem("RecentSearches")) || [];
-
-    let updatedSearches;
-
-    if (isAuthenticated) {
-      // 로그인 한 사용자일 때
-      const existingTokenIndex = existingSearches.findIndex(
-        (item) => item.token === accessToken
-      );
-
-      if (existingTokenIndex !== -1) {
-        // 해당 토큰이 이미 존재하는 경우(검색 기록 O)
-        updatedSearches = existingSearches.map((item, index) =>
-          index === existingTokenIndex
-            ? {
-                token: accessToken,
-                keyword: [word, ...item.keyword]
-                  .filter((keyword, i, self) => self.indexOf(keyword) === i)
-                  .slice(0, 4)
-              }
-            : item
-        );
-      } else {
-        // 로그인 & 이전 최근 검색 기록 없는 경우
-        updatedSearches = [
-          ...existingSearches,
-          { token: accessToken, keyword: [word] }
-        ];
-      }
-    } else {
-      // 미로그인
-      updatedSearches = existingSearches.map((item) => item);
+    // 로컬 스토리지 사용할 수 없을 때 브라우저 캐시 사용
+    try {
+      saveLocalStorage(word, isAuthenticated, accessToken);
+    } catch (error) {
+      saveCacheStorage(word, isAuthenticated, accessToken);
     }
-
-    localStorage.setItem("RecentSearches", JSON.stringify(updatedSearches));
   };
 
   const handleSearchSubmit = (current) => {

@@ -1,4 +1,6 @@
 import { getPublishedPosts } from "@/api/marketApi";
+import Loading from "@/components/Loading";
+import useModalStore from "@/utils/hooks/store/useModalStore";
 import styled from "@emotion/styled";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -7,16 +9,15 @@ import { useNavigate } from "react-router-dom";
 // 상품 리스트를 보여주는 공용 컴포넌트
 
 const ProductList = (props) => {
-  // Intersection Observer를 사용하여 마지막 상품이 보여질 때를 감지
   const { keyword } = props;
   const navigate = useNavigate();
   const [productList, setProductList] = useState([]);
   const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
+  const { openModal, closeModal } = useModalStore();
   const observer = useRef();
 
   const getProductList = async ({ currentPage = 1, queryKey }) => {
-    const { keyword } = queryKey[1]; // Destructure the parameters from the queryKey
-    console.log("kyj currentPage::", currentPage);
+    const { keyword } = queryKey[1];
     const resData = await getPublishedPosts({
       page: currentPage !== 1 ? currentPage + 1 : currentPage,
       limit: 10,
@@ -24,22 +25,18 @@ const ProductList = (props) => {
       orderBy: "createdAt",
       direction: "asc"
     });
-    console.log("kyj resData::", resData);
 
     const { page, lastPage, data: responseData } = resData.data;
-    // api 호출 값에서 가지고 온 lastPage 결과
-
     setProductList((prevList) => [...prevList, ...responseData]);
 
     return page < lastPage ? page + 1 : 1;
   };
 
-  const { data, error, fetchNextPage, hasNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ["productList", { keyword: keyword || "" }],
-      queryFn: getProductList,
-      getNextPageParam: (curPage) => curPage
-    });
+  const { error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+    queryKey: ["productList", { keyword: keyword || "" }],
+    queryFn: getProductList,
+    getNextPageParam: (curPage) => curPage
+  });
 
   const observerOption = {
     root: null,
@@ -48,6 +45,7 @@ const ProductList = (props) => {
   };
 
   const lastProductRef = useCallback(
+    // Intersection Observer를 사용하여 마지막 상품이 보여질 때를 감지
     (node) => {
       if (observer.current) {
         observer.current.disconnect();
@@ -55,6 +53,7 @@ const ProductList = (props) => {
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
+          // 현재 ref가 활성화 상태 && 다음 페이지가 있는 경우
           setShowTopButton(true);
           fetchNextPage();
         }
@@ -68,41 +67,15 @@ const ProductList = (props) => {
   );
 
   const scrollToTop = () => {
+    // top 버튼 누르면 최상단으로 이동
     window.scrollTo({
       top: 0,
       behavior: "smooth"
     });
   };
 
-  // useEffect(() => {
-  //   const handleTop = () => {
-  //     // 스크롤이 제일 상단에 가면 top 버튼 안 보이게 처리
-  //     const isTop = window.scrollY === 0;
-  //     setShowTopButton(!isTop);
-  //   };
-
-  //   window.addEventListener("scroll", handleTop);
-
-  //   return () => {
-  //     window.removeEventListener("scroll", handleTop);
-  //   };
-  // }, []);
-
-  useEffect(() => {
-    if (error) {
-      console.error("데이터 추가 불러오기 실패:", error);
-    }
-
-    if (isFetching) {
-      console.log("로딩 중");
-      // return <div>로딩 중입니다.....</div>;
-      // 로딩 중인 상태를 표시하는 UI
-    }
-  }, [error, data, isFetching]);
-
   useEffect(() => {
     // 초기 데이터 로딩
-    let searchWord = keyword || "";
 
     const handleTop = () => {
       // 스크롤이 제일 상단에 가면 top 버튼 안 보이게 처리
@@ -117,40 +90,62 @@ const ProductList = (props) => {
     };
   }, [keyword]);
 
+  useEffect(() => {
+    // 추후에 조건 풀 지 확인해보기
+    if (error && !error.response?.status === 401) {
+      console.error("상품 불러오기 실패:", error);
+      const customContent = (
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">상품을 가져올 수 없습니다.</h3>
+          <p className="py-4"> 다시 시도해 주시기 바랍니다.</p>
+          <div className="modal-action">
+            <button className="btn" onClick={closeModal}>
+              확인
+            </button>
+          </div>
+        </div>
+      );
+      openModal(customContent);
+    }
+  }, [error]);
+
   return (
-    <ProductListWrap>
-      {productList && productList.length > 0 ? (
-        <>
-          <CardWrap>
-            {productList.map((product, index) => (
-              <Card
-                key={index}
-                ref={index === productList.length - 1 ? lastProductRef : null}
-                onClick={() => navigate(`/web/product/${product.id}`)}>
-                <CardImg src={product.imgUrls[0]} alt={product.title} />
-                {index === productList.length - 1 ? (
+    <div>
+      <ProductListWrap>
+        {isFetching && <Loading />}
+        {productList && productList.length > 0 ? (
+          <>
+            <CardWrap>
+              {productList.map((product, index) => (
+                <Card
+                  key={index}
+                  ref={index === productList.length - 1 ? lastProductRef : null}
+                  onClick={() => navigate(`/web/product/${product.id}`)}>
+                  <CardImg src={product.imgUrls[0]} alt={product.title} />
+                  <ProductBadge>{product.location}</ProductBadge>
                   <ProductTitle>{product.title}</ProductTitle>
-                ) : (
-                  <>
-                    <ProductBadge>{product.location}</ProductBadge>
-                    <ProductTitle>{product.title}</ProductTitle>
-                    <ProductPrice>{product.price}원</ProductPrice>
-                  </>
-                )}
-              </Card>
-            ))}
-          </CardWrap>
-          <TopButton
-            className="btn btn-neutral"
-            show={showTopButton}
-            onClick={scrollToTop}>
-            TOP
-          </TopButton>
-        </>
-      ) : (
-        <NoticeMsg>{!productList && "상품이 없습니다."}</NoticeMsg>
-      )}
-    </ProductListWrap>
+                  <ProductPrice>{product.price}원</ProductPrice>
+                </Card>
+              ))}
+            </CardWrap>
+            <TopButton
+              className="btn btn-neutral"
+              show={showTopButton}
+              onClick={isFetching ? () => {} : scrollToTop}>
+              TOP
+            </TopButton>
+          </>
+        ) : (
+          <div>
+            {!productList?.length && !isFetching && (
+              <NoticeMsg>
+                {`${keyword ? "검색 결과가" : "상품이"} 없습니다.`}
+              </NoticeMsg>
+            )}
+          </div>
+        )}
+      </ProductListWrap>
+    </div>
   );
 };
 

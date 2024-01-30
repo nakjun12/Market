@@ -1,7 +1,8 @@
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import styled from "@emotion/styled";
-import { UsersIcon } from "@heroicons/react/16/solid";
 import { useEffect, useState } from "react";
+import { getLocalStorage } from "@/pages/product/components/SaveSearchStorage";
+import { getCacheStorage } from "@/pages/product/components/SaveSearchStorage";
 
 // 검색 - 최근 검색어 목록 컴포넌트
 const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
@@ -11,15 +12,11 @@ const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
   useEffect(() => {
     let storedSearches = [];
 
-    if (isAuthenticated && accessToken) {
-      // 로그인 & 토큰 유효 사용자일 때
-      const userTokenSearches =
-        (JSON.parse(localStorage.getItem("RecentSearches")) || [])[0] || {};
-
-      storedSearches = userTokenSearches.keyword || [];
-    } else {
-      // 미로그인 사용자일 때
-      storedSearches = [];
+    try {
+      // 로컬 스토리지 사용할 수 없을 때 브라우저 캐시 사용
+      storedSearches = getLocalStorage(isAuthenticated, accessToken);
+    } catch (error) {
+      storedSearches = getCacheStorage(isAuthenticated, accessToken);
     }
 
     setRecentSearches(storedSearches);
