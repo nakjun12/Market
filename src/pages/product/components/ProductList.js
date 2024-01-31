@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
-
 const ProductList = (props) => {
   const { keyword } = props;
   const navigate = useNavigate();
@@ -16,11 +15,11 @@ const ProductList = (props) => {
   const { openModal, closeModal } = useModalStore();
   const observer = useRef();
 
-  const getProductList = async ({ currentPage = 1, queryKey }) => {
-    const { keyword } = queryKey[1];
+  const getProductList = async ({ pageParam = 1 }) => {
+    // pageParam : useInfiniteQuery의 getNextPageParam에서 반환해준 값 (=다음 불러올 페이지)
     const resData = await getPublishedPosts({
-      page: currentPage !== 1 ? currentPage + 1 : currentPage,
-      limit: 10,
+      page: pageParam !== 1 ? pageParam : 1, // 1 페이지가 아니면 nextPage(현재+1 된 값)을 호출
+      limit: 20,
       query: keyword ? keyword : "",
       orderBy: "createdAt",
       direction: "asc"
@@ -29,13 +28,20 @@ const ProductList = (props) => {
     const { page, lastPage, data: responseData } = resData.data;
     setProductList((prevList) => [...prevList, ...responseData]);
 
-    return page < lastPage ? page + 1 : 1;
+    // return은 아래 useInfiniteQuery에서 getNextPageParam으로 전달
+    // page 뜻을 전달하기 위해 이름 curPage로 전달
+    return { curPage: page, lastPage };
   };
 
   const { error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
-    queryKey: ["productList", { keyword: keyword || "" }],
+    queryKey: ["productList"],
     queryFn: getProductList,
-    getNextPageParam: (curPage) => curPage
+    // 위의 getPublishedPosts 결과값으로 얻은 page (현재 받아온 페이지) , lastpage (총 페이지)
+    getNextPageParam: ({ curPage, lastPage }) => {
+      // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
+      // 여기서 return 하는 값은 pageParam으로 전달 됨
+      return curPage < lastPage ? curPage + 1 : lastPage;
+    }
   });
 
   const observerOption = {
