@@ -5,8 +5,6 @@ import ReactDOM from "react-dom/client";
 import App from "@/App";
 // 스타일시트를 임포트합니다.
 import "@/styles/index.css";
-import { RouterProvider } from "react-router-dom";
-import { routers } from "./router";
 
 // React Query 클라이언트를 초기화합니다.
 // 이 클라이언트는 데이터 페칭 및 캐싱을 관리합니다.
@@ -26,9 +24,7 @@ enableMocking().finally(() => {
   // 이를 통해 하위 컴포넌트에서 React Query의 기능을 사용할 수 있습니다.
   root.render(
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={routers}>
-        <App />
-      </RouterProvider>
+      <App />
     </QueryClientProvider>
   );
 });
