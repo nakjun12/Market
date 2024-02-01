@@ -10,8 +10,12 @@ const useAuthStore = create(
   devtools((set) => ({
     accessToken: null,
     isAuthenticated: false,
+    id: null,
+    username: null,
     setAccessToken: (token) =>
       set({ accessToken: token, isAuthenticated: !!token }),
+    setUser: ({ id, username, token }) =>
+      set({ id, username, accessToken: token, isAuthenticated: !!token }),
     logout: async () => {
       try {
         // 서버의 로그아웃 엔드포인트에 요청
