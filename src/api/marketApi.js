@@ -31,6 +31,7 @@ marketApi.interceptors.response.use(
     const isRefreshTokenRequest = originalRequest.url === "/auth/refresh-token";
 
     // 401 인증에러 + 재요청이 아닐때 + refreshToken에 대한 요청이 아닐 떄
+    // 즉 액세스 토큰이 만료되어 거절될 떄 재발급 절차
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
@@ -38,17 +39,21 @@ marketApi.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { refreshData } = await marketApi.post("/auth/refresh-token");
-        useAuthStore.getState().setAccessToken(refreshData.accessToken);
+        const refreshData = await marketApi.post("/auth/refresh-token");
+        useAuthStore.getState().setAccessToken(refreshData.data?.accessToken);
         originalRequest.headers["Authorization"] =
-          `Bearer ${refreshData.accessToken}`;
-        const { userData } = await marketApi.get("/users/me");
-        useAuthStore
-          .getState()
-          .setUser({ id: userData.id, userName: userData.username });
+          `Bearer ${refreshData.data?.accessToken}`;
+        const userData = await marketApi.get("/users/me", {
+          requiresAuth: true
+        });
+        useAuthStore.getState().setUser({
+          id: userData.data?.id,
+          userName: userData.data?.username
+        });
         return marketApi(originalRequest);
       } catch (refreshError) {
         // 리프레시 토큰 요청 실패 시 로그아웃 처리
+        console.error("인증 정보 만료");
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }
@@ -94,8 +99,8 @@ export const postAuthLogin = async ({ email, password }) => {
   return response.data;
 };
 //
-export const getAuthProfile = async () => {
-  return await marketApi.get("/auth/profile", { requiresAuth: true });
+export const getUserMe = async () => {
+  return await marketApi.get("/users/me", { requiresAuth: true });
 };
 
 // 유저 정보 업데이트
