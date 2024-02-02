@@ -6,14 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
-const ProductList = ({ getProductList, productList, keyword }) => {
+const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
   const navigate = useNavigate();
   const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
   const { openModal, closeModal } = useModalStore();
   const observer = useRef();
 
   const { error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
-    queryKey: ["productList"],
+    queryKey: queryKey,
     queryFn: getProductList,
     // 위의 getPublishedPosts 결과값으로 얻은 page (현재 받아온 페이지) , lastpage (총 페이지)
     getNextPageParam: ({ curPage, lastPage }) => {

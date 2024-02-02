@@ -36,6 +36,7 @@ export default function ProductsPage() {
         getProductList={getProductList}
         productList={productList}
         keyword={keyword}
+        queryKey={["HomeProductList"]}
       />
     </div>
   );

@@ -83,6 +83,7 @@ export const ProfilePage = () => {
         getProductList={getProductList}
         productList={productList}
         keyword={keyword}
+        queryKey={["ProfileProductList"]}
       />
     </>
   );
