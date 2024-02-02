@@ -1,4 +1,3 @@
-import { getPublishedPosts } from "@/api/marketApi";
 import Loading from "@/components/Loading";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import styled from "@emotion/styled";
@@ -7,31 +6,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
-const ProductList = (props) => {
-  const { keyword } = props;
+const ProductList = ({ getProductList, productList, keyword }) => {
   const navigate = useNavigate();
-  const [productList, setProductList] = useState([]);
   const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
   const { openModal, closeModal } = useModalStore();
   const observer = useRef();
-
-  const getProductList = async ({ pageParam = 1 }) => {
-    // pageParam : useInfiniteQuery의 getNextPageParam에서 반환해준 값 (=다음 불러올 페이지)
-    const resData = await getPublishedPosts({
-      page: pageParam !== 1 ? pageParam : 1, // 1 페이지가 아니면 nextPage(현재+1 된 값)을 호출
-      limit: 20,
-      query: keyword ? keyword : "",
-      orderBy: "createdAt",
-      direction: "asc"
-    });
-
-    const { page, lastPage, data: responseData } = resData.data;
-    setProductList((prevList) => [...prevList, ...responseData]);
-
-    // return은 아래 useInfiniteQuery에서 getNextPageParam으로 전달
-    // page 뜻을 전달하기 위해 이름 curPage로 전달
-    return { curPage: page, lastPage };
-  };
 
   const { error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ["productList"],

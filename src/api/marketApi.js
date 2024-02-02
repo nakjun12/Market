@@ -31,6 +31,7 @@ marketApi.interceptors.response.use(
     const isRefreshTokenRequest = originalRequest.url === "/auth/refresh-token";
 
     // 401 인증에러 + 재요청이 아닐때 + refreshToken에 대한 요청이 아닐 떄
+    // 즉 액세스 토큰이 만료되어 거절될 떄 재발급 절차
     if (
       error.response.status === 401 &&
       !originalRequest._retry &&
@@ -38,12 +39,21 @@ marketApi.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { data } = await marketApi.post("/auth/refresh-token");
-        useAuthStore.getState().setAccessToken(data.accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        const refreshData = await marketApi.post("/auth/refresh-token");
+        useAuthStore.getState().setAccessToken(refreshData.data?.accessToken);
+        originalRequest.headers["Authorization"] =
+          `Bearer ${refreshData.data?.accessToken}`;
+        const userData = await marketApi.get("/users/me", {
+          requiresAuth: true
+        });
+        useAuthStore.getState().setUser({
+          id: userData.data?.id,
+          userName: userData.data?.username
+        });
         return marketApi(originalRequest);
       } catch (refreshError) {
         // 리프레시 토큰 요청 실패 시 로그아웃 처리
+        console.error("인증 정보 만료");
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }
@@ -57,7 +67,7 @@ marketApi.interceptors.response.use(
  *
  */
 
-// 인증이 필요한 요청
+// 인증이 필요한 요청 (헤더 정보 주입)
 //const response = await marketApi.get('/protected-route', { requiresAuth: true });
 
 // 인증이 필요하지 않은 요청
@@ -88,21 +98,8 @@ export const postAuthLogin = async ({ email, password }) => {
   useAuthStore.getState().setAccessToken(response.data.accessToken);
   return response.data;
 };
-
-// 토큰 리프레쉬 (cookie의 refresh토큰 사용 없을 경우 401에러) 삭제예정
-export const postRefreshToken = async () => {
-  const response = marketApi.post("/auth/refresh-token");
-  useAuthStore.getState().setAccessToken(response.data.accessToken);
-  return await response.data;
-};
-
 //
-export const getAuthProfile = async () => {
-  return await marketApi.get("/auth/profile", { requiresAuth: true });
-};
-
-//내 정보 가져오기
-export const getUsersMe = async () => {
+export const getUserMe = async () => {
   return await marketApi.get("/users/me", { requiresAuth: true });
 };
 
@@ -153,8 +150,23 @@ export const getPostById = (id) => {
 };
 
 // 특정 사용자의 게시물 목록 가져오기
-export const getPostByUser = (userId) => {
-  return marketApi.get(`/posts/${userId}/posts`);
+export const getPostByUser = ({
+  page,
+  limit,
+  query,
+  orderBy,
+  direction,
+  userId
+}) => {
+  return marketApi.get(`/posts/${userId}/list`, {
+    params: {
+      page,
+      limit,
+      query,
+      orderBy,
+      direction
+    }
+  });
 };
 
 export default marketApi;

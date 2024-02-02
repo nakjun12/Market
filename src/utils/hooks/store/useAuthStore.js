@@ -10,8 +10,12 @@ const useAuthStore = create(
   devtools((set) => ({
     accessToken: null,
     isAuthenticated: false,
+    id: null,
+    userName: null,
+    email: null,
     setAccessToken: (token) =>
-      set({ accessToken: token, isAuthenticated: !!token }),
+      set({ accessToken: token, isAuthenticated: true }),
+    setUser: ({ id, userName, email }) => set({ id, userName, email }),
     logout: async () => {
       try {
         // 서버의 로그아웃 엔드포인트에 요청
@@ -20,7 +24,13 @@ const useAuthStore = create(
         console.error("Logout failed:", error);
       }
       // 클라이언트 상태 업데이트
-      set({ accessToken: null, isAuthenticated: false });
+      set({
+        accessToken: null,
+        isAuthenticated: false,
+        userName: null,
+        id: null,
+        email: null
+      });
     }
   }))
 );
