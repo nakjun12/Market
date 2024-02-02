@@ -39,7 +39,7 @@ const ProductSearchResultPage = () => {
         getProductList={getProductList}
         productList={productList}
         keyword={keyword}
-        queryKey={["HomeProductList"]}
+        queryKey={["SearchProductList"]}
       />
     </div>
   );
