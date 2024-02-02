@@ -1,7 +1,7 @@
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
 
 export const LogoutMenuList = () => {
-  const { logout } = useAuthStore();
+  const { logout, userName } = useAuthStore();
   return (
     <div className="dropdown dropdown-end">
       <div
@@ -20,8 +20,8 @@ export const LogoutMenuList = () => {
         className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
         <li>
           <a className="justify-between">
-            Profile
-            <span className="badge">New</span>
+            HI! {userName}
+            <span className="badge">Name</span>
           </a>
         </li>
         <li>

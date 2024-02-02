@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useAuthStore from "./hooks/store/useAuthStore";
 import marketApi from "@/api/marketApi";
 
-// 최상단에서 Url 라우팅 시 감지 및 변경
+// 최상단에서 감지하는 함수 변경
 export function LocationObserver() {
   const { setAccessToken, setUser } = useAuthStore();
 
