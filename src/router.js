@@ -29,6 +29,7 @@ export const routeConfig = [
   { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
   { path: ROUTES.JOIN, element: <JoinPage /> },
+  // 인증이 필요한 사이트인 경우 authRequire를 추가
   { path: ROUTES.PROFILE, element: <ProfilePage />, authRequire: true },
 
   // 404 Not Found 페이지 경로, NotFoundPage 컴포넌트를 렌더링합니다.
@@ -36,7 +37,7 @@ export const routeConfig = [
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> }
 ];
 
-// 하단 인증 로직 (Auth)
+// 하단 인증 Wrap (비인증 유저의 인증페이지 접근 시 home으로 이동)
 const RequireAuth = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
 
@@ -46,8 +47,6 @@ const RequireAuth = ({ children }) => {
 
   return children;
 };
-
-const wrapInAuth = (element) => <RequireAuth>{element}</RequireAuth>;
 
 /**
  * 라우터 설정을 생성합니다. 이 설정은 앱 전체의 페이지 라우팅 구조를 정의합니다.
@@ -63,7 +62,11 @@ export const routers = createBrowserRouter([
     // errorElement: <Empty />, // 에러 발생 시 보여줄 컴포넌트 (옵션)
     children: routeConfig.map((route) => ({
       ...route,
-      element: route.authRequire ? wrapInAuth(route.element) : route.element
+      element: route.authRequire ? (
+        <RequireAuth>{route.element}</RequireAuth>
+      ) : (
+        route.element
+      )
     }))
   },
   {

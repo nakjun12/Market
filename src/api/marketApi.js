@@ -62,7 +62,7 @@ marketApi.interceptors.response.use(
  *
  */
 
-// 인증이 필요한 요청
+// 인증이 필요한 요청 (헤더 정보 주입)
 //const response = await marketApi.get('/protected-route', { requiresAuth: true });
 
 // 인증이 필요하지 않은 요청
