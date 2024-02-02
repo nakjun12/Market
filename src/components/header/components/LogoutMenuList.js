@@ -1,7 +1,10 @@
+import { ROUTES } from "@/utils/constants/routePaths";
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 export const LogoutMenuList = () => {
   const { logout, userName } = useAuthStore();
+  const navigate = useNavigate();
   return (
     <div className="dropdown dropdown-end">
       <div
@@ -18,14 +21,14 @@ export const LogoutMenuList = () => {
       <ul
         tabIndex={0}
         className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-        <li>
+        <li onClick={() => navigate(ROUTES.JOIN)}>
           <a className="justify-between">
             HI! {userName}
-            <span className="badge">Name</span>
+            <span className="badge">Profile</span>
           </a>
         </li>
-        <li>
-          <div onClick={() => logout()}>Logout</div>
+        <li onClick={() => logout()}>
+          <div>Logout</div>
         </li>
       </ul>
     </div>
