@@ -12,9 +12,10 @@ const useAuthStore = create(
     isAuthenticated: false,
     id: null,
     userName: null,
+    email: null,
     setAccessToken: (token) =>
       set({ accessToken: token, isAuthenticated: true }),
-    setUser: ({ id, userName }) => set({ id, userName }),
+    setUser: ({ id, userName, email }) => set({ id, userName, email }),
     logout: async () => {
       try {
         // 서버의 로그아웃 엔드포인트에 요청
@@ -27,7 +28,8 @@ const useAuthStore = create(
         accessToken: null,
         isAuthenticated: false,
         userName: null,
-        id: null
+        id: null,
+        email: null
       });
     }
   }))

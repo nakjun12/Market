@@ -1,13 +1,8 @@
-import { getUserMe } from "@/api/marketApi";
 import { ROUTES } from "@/utils/constants/routePaths";
 import { useNavigate } from "react-router-dom";
 
 export const LoginMenuList = () => {
   const navigate = useNavigate();
-
-  const testFunc = async () => {
-    const data = await getUserMe();
-  };
   return (
     <div className="dropdown dropdown-end">
       <div
@@ -35,9 +30,6 @@ export const LoginMenuList = () => {
         </li>
         <li onClick={() => navigate(ROUTES.JOIN)}>
           <div>Join</div>
-        </li>
-        <li onClick={testFunc}>
-          <div>test</div>
         </li>
       </ul>
     </div>

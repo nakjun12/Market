@@ -1,4 +1,3 @@
-import { getUserMe } from "@/api/marketApi";
 import { ROUTES } from "@/utils/constants/routePaths";
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 export const LogoutMenuList = () => {
   const { logout, userName } = useAuthStore();
   const navigate = useNavigate();
-  const testFunc = async () => {
-    const data = await getUserMe();
-  };
   return (
     <div className="dropdown dropdown-end">
       <div
@@ -33,9 +29,6 @@ export const LogoutMenuList = () => {
         </li>
         <li onClick={() => logout()}>
           <div>Logout</div>
-        </li>
-        <li onClick={testFunc}>
-          <div>test</div>
         </li>
       </ul>
     </div>

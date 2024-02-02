@@ -23,7 +23,11 @@ export function LocationObserver() {
       const userData = await marketApi.get("/users/me", {
         requiresAuth: true
       });
-      setUser({ id: userData.data?.id, userName: userData.data?.username });
+      setUser({
+        id: userData.data?.id,
+        userName: userData.data?.username,
+        email: userData.data?.email
+      });
     };
     if (accessToken) {
       fetchUser();
