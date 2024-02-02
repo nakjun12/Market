@@ -38,9 +38,14 @@ marketApi.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { data } = await marketApi.post("/auth/refresh-token");
-        useAuthStore.getState().setAccessToken(data.accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
+        const { refreshData } = await marketApi.post("/auth/refresh-token");
+        useAuthStore.getState().setAccessToken(refreshData.accessToken);
+        originalRequest.headers["Authorization"] =
+          `Bearer ${refreshData.accessToken}`;
+        const { userData } = await marketApi.get("/users/me");
+        useAuthStore
+          .getState()
+          .setUser({ id: userData.id, userName: userData.username });
         return marketApi(originalRequest);
       } catch (refreshError) {
         // 리프레시 토큰 요청 실패 시 로그아웃 처리
@@ -88,22 +93,9 @@ export const postAuthLogin = async ({ email, password }) => {
   useAuthStore.getState().setAccessToken(response.data.accessToken);
   return response.data;
 };
-
-// 토큰 리프레쉬 (cookie의 refresh토큰 사용 없을 경우 401에러) 삭제예정
-export const postRefreshToken = async () => {
-  const response = marketApi.post("/auth/refresh-token");
-  useAuthStore.getState().setAccessToken(response.data.accessToken);
-  return await response.data;
-};
-
 //
 export const getAuthProfile = async () => {
   return await marketApi.get("/auth/profile", { requiresAuth: true });
-};
-
-//내 정보 가져오기
-export const getUsersMe = async () => {
-  return await marketApi.get("/users/me", { requiresAuth: true });
 };
 
 // 유저 정보 업데이트
