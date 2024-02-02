@@ -9,7 +9,7 @@ import {
 
 const ProductsSearchPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { isAuthenticated, id: loginId } = useAuthStore();
   const [inputVal, setInputVal] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -17,16 +17,16 @@ const ProductsSearchPage = () => {
     // 최근 검색어 저장 로직 추가
     // 로컬 스토리지 사용할 수 없을 때 브라우저 캐시 사용
     try {
-      saveLocalStorage(word, isAuthenticated, accessToken);
+      saveLocalStorage(word, isAuthenticated, loginId);
     } catch (error) {
-      saveCacheStorage(word, isAuthenticated, accessToken);
+      saveCacheStorage(word, isAuthenticated, loginId);
     }
   };
 
   const handleSearchSubmit = (current) => {
     let searchWord;
 
-    console.log("type::", typeof current);
+    // console.log("type::", typeof current);
     if (typeof current === "string") {
       // 최근 검색어를 클릭한 경우
       searchWord = current.trim();

@@ -6,7 +6,7 @@ import { getCacheStorage } from "@/pages/product/components/SaveSearchStorage";
 
 // 검색 - 최근 검색어 목록 컴포넌트
 const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { isAuthenticated, id: loginId } = useAuthStore();
   const [recentSearches, setRecentSearches] = useState([]);
 
   useEffect(() => {
@@ -14,13 +14,13 @@ const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
 
     try {
       // 로컬 스토리지 사용할 수 없을 때 브라우저 캐시 사용
-      storedSearches = getLocalStorage(isAuthenticated, accessToken);
+      storedSearches = getLocalStorage(isAuthenticated, loginId);
     } catch (error) {
-      storedSearches = getCacheStorage(isAuthenticated, accessToken);
+      storedSearches = getCacheStorage(isAuthenticated, loginId);
     }
 
     setRecentSearches(storedSearches);
-  }, [searchTerm, isAuthenticated, accessToken]);
+  }, [searchTerm, isAuthenticated, loginId]);
 
   return (
     <>
