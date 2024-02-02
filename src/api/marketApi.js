@@ -150,8 +150,23 @@ export const getPostById = (id) => {
 };
 
 // 특정 사용자의 게시물 목록 가져오기
-export const getPostByUser = (userId) => {
-  return marketApi.get(`/posts/${userId}/posts`);
+export const getPostByUser = ({
+  page,
+  limit,
+  query,
+  orderBy,
+  direction,
+  userId
+}) => {
+  return marketApi.get(`/posts/${userId}/list`, {
+    params: {
+      page,
+      limit,
+      query,
+      orderBy,
+      direction
+    }
+  });
 };
 
 export default marketApi;

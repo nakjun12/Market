@@ -1,8 +1,30 @@
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import ProductList from "../product/components/ProductList";
+import { useState } from "react";
+import { getPostByUser } from "@/api/marketApi";
 
 export const ProfilePage = () => {
   const { id, userName, email } = useAuthStore();
+  const [productList, setProductList] = useState([]);
+  const keyword = null;
+  const getProductList = async ({ pageParam = 1 }) => {
+    // pageParam : useInfiniteQuery의 getNextPageParam에서 반환해준 값 (=다음 불러올 페이지)
+    const resData = await getPostByUser({
+      page: pageParam !== 1 ? pageParam : 1, // 1 페이지가 아니면 nextPage(현재+1 된 값)을 호출
+      limit: 20,
+      query: keyword ? keyword : "",
+      orderBy: "createdAt",
+      direction: "asc",
+      userId: id
+    });
+
+    const { page, lastPage, data: responseData } = resData.data;
+    setProductList((prevList) => [...prevList, ...responseData]);
+
+    // return은 아래 useInfiniteQuery에서 getNextPageParam으로 전달
+    // page 뜻을 전달하기 위해 이름 curPage로 전달
+    return { curPage: page, lastPage };
+  };
   return (
     <>
       <div className="w-full flex justify-center mt-20">
@@ -57,7 +79,11 @@ export const ProfilePage = () => {
         </div>
       </div>
       <div className="text-center p-4">내가 올린 상품 리스트</div>
-      <ProductList />
+      <ProductList
+        getProductList={getProductList}
+        productList={productList}
+        keyword={keyword}
+      />
     </>
   );
 };

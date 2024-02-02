@@ -27,6 +27,7 @@ export default function ProductsPage() {
     // page 뜻을 전달하기 위해 이름 curPage로 전달
     return { curPage: page, lastPage };
   };
+
   return (
     <div>
       <ProductPageText>원하시는 상품을 찾아보세요.</ProductPageText>
