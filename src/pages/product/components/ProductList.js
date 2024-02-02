@@ -40,7 +40,7 @@ const ProductList = (props) => {
     getNextPageParam: ({ curPage, lastPage }) => {
       // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
       // 여기서 return 하는 값은 pageParam으로 전달 됨
-      return curPage < lastPage ? curPage + 1 : lastPage;
+      return curPage < lastPage ? curPage + 1 : null;
     }
   });
 
@@ -164,13 +164,13 @@ const ProductListWrap = styled.div`
 const CardWrap = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
   margin-bottom: 30px;
 `;
 
 const Card = styled.div`
   width: 180px;
-  margin-bottom: 10px;
+  margin: 7px;
   padding: 10px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
