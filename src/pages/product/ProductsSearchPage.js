@@ -26,7 +26,7 @@ const ProductsSearchPage = () => {
   const handleSearchSubmit = (current) => {
     let searchWord;
 
-    console.log("type::", typeof current);
+    // console.log("type::", typeof current);
     if (typeof current === "string") {
       // 최근 검색어를 클릭한 경우
       searchWord = current.trim();
