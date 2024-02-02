@@ -9,6 +9,9 @@ import { LoginPage } from "./pages/login/LoginPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
 import ProductsSearchPage from "./pages/product/ProductsSearchPage";
 import ProductSearchResultPage from "./pages/product/ProductSearchResultPage";
+import { ProfilePage } from "./pages/profile/ProfilePage";
+import { Navigate } from "react-router-dom";
+import useAuthStore from "./utils/hooks/store/useAuthStore";
 
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
 // 현재는 직접 임포트를 사용하고 있지만, 나중에 필요시 아래의 코드로 대체할 수 있습니다.
@@ -26,11 +29,25 @@ export const routeConfig = [
   { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
   { path: ROUTES.JOIN, element: <JoinPage /> },
+  { path: ROUTES.PROFILE, element: <ProfilePage />, authRequire: true },
 
   // 404 Not Found 페이지 경로, NotFoundPage 컴포넌트를 렌더링합니다.
   // 와일드카드('*') 경로를 사용하여 예상치 못한 모든 경로에서 NotFoundPage를 띄웁니다.
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> }
 ];
+
+// 하단 인증 로직 (Auth)
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated } = useAuthStore();
+
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+
+  return children;
+};
+
+const wrapInAuth = (element) => <RequireAuth>{element}</RequireAuth>;
 
 /**
  * 라우터 설정을 생성합니다. 이 설정은 앱 전체의 페이지 라우팅 구조를 정의합니다.
@@ -44,7 +61,10 @@ export const routers = createBrowserRouter([
     label: "WithLayoutPage",
     element: <WithLayout />,
     // errorElement: <Empty />, // 에러 발생 시 보여줄 컴포넌트 (옵션)
-    children: routeConfig // WithLayout 컴포넌트를 감싸는 하위 페이지 라우트
+    children: routeConfig.map((route) => ({
+      ...route,
+      element: route.authRequire ? wrapInAuth(route.element) : route.element
+    }))
   },
   {
     // 부모 라우트의 path가 "/web/test"이므로,
