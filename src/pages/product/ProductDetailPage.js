@@ -1,7 +1,7 @@
+import { getPostById } from "@/api/marketApi";
 import ProductImageCarousel from "@/components/carousel/ProductImageCarousel";
-import Dialog from "@/components/popup/Dialog";
 import useModalStore from "@/utils/hooks/store/useModalStore";
-import { useState } from "react";
+import { useEffect } from "react";
 
 const images = [
   "https://i.pinimg.com/550x/a9/f1/2a/a9f12ad9bfe0baa4f6e629d1e0fa439c.jpg",
@@ -10,25 +10,15 @@ const images = [
 ];
 
 export default function ProductDetailPage() {
-  // console.log(getPublishedPosts().then((e) => console.log(e)));
-  const { openModal, closeModal } = useModalStore();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const openDialog = () => setIsDialogOpen(true);
-  const closeDialog = () => setIsDialogOpen(false);
+  const { openModal } = useModalStore();
+  useEffect(() => {
+    console.log(getPostById(1).then((e) => console.log(e)));
+  }, []);
   const openCustomPopup = ({ process }) => {
     const customContent = (
       <div>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            가입에 {process ? "성공" : "실패"} 했습니다.
-          </h3>
-          {process ? (
-            <p className="py-4">
-              확인 버튼 클릭으로 로그인 페이지로 이동합니다.
-            </p>
-          ) : (
-            <p className="py-4">다시 시도해 주시기 바랍니다.</p>
-          )}
+        <div className="modal-box w-64">
+          <h3 className="font-bold text-lg">장바구니에 저장하였습니다.</h3>
           <div className="modal-action">
             <button className="btn">확인</button>
           </div>
@@ -40,10 +30,6 @@ export default function ProductDetailPage() {
   return (
     <div className="max-w-sm mx-auto relative">
       <ProductImageCarousel images={images} />
-      <button onClick={openDialog}>모달 열기</button>
-      <Dialog isOpen={isDialogOpen} onBackdropClick={closeDialog}>
-        <div>모달 컨텐츠</div>
-      </Dialog>
       <div className="px-4 py-2"></div>
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
