@@ -1,27 +1,30 @@
 import Loading from "@/components/Loading";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import styled from "@emotion/styled";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { css } from "@emotion/react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
 const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
   const { openModal, closeModal } = useModalStore();
   const observer = useRef();
 
-  const { error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
-    queryKey: queryKey,
-    queryFn: getProductList,
-    // 위의 getPublishedPosts 결과값으로 얻은 page (현재 받아온 페이지) , lastpage (총 페이지)
-    getNextPageParam: ({ curPage, lastPage }) => {
-      // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
-      // 여기서 return 하는 값은 pageParam으로 전달 됨
-      return curPage < lastPage ? curPage + 1 : null;
-    }
-  });
+  const { error, fetchNextPage, hasNextPage, isFetching, isLoading } =
+    useInfiniteQuery({
+      queryKey: queryKey,
+      queryFn: getProductList,
+      getNextPageParam: ({ curPage, lastPage }) => {
+        // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
+        // 여기서 return 하는 값은 pageParam으로 전달 됨
+        return curPage < lastPage ? curPage + 1 : null;
+        ㅉ;
+      }
+    });
 
   const observerOption = {
     root: null,
@@ -48,6 +51,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
         observer.current.observe(node);
       }
     },
+
     [fetchNextPage, hasNextPage]
   );
 
@@ -59,6 +63,16 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
     });
   };
 
+  // 스켈레톤 카드 컴포넌트
+  const SkeletonCard = () => (
+    <Card isLoading={true}>
+      <CardImg isLoading={true} />
+      <ProductBadge isLoading={true}></ProductBadge>
+      <ProductTitle isLoading={true}></ProductTitle>
+      <ProductPrice isLoading={true}></ProductPrice>
+    </Card>
+  );
+
   useEffect(() => {
     // 초기 데이터 로딩
 
@@ -67,13 +81,23 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
       const isTop = window.scrollY === 0;
       setShowTopButton(!isTop);
     };
+    if (!isLoading) {
+      window.addEventListener("scroll", handleTop);
 
-    window.addEventListener("scroll", handleTop);
-
-    return () => {
-      window.removeEventListener("scroll", handleTop);
-    };
+      return () => {
+        // 스크롤 이벤트 리스너 제거
+        window.removeEventListener("scroll", handleTop);
+      };
+    }
   }, [keyword]);
+
+  useEffect(() => {
+    return () => {
+      // 컴포넌트가 언마운트될 때 React Query의 쿼리를 초기화
+      // queryClient.cancelQueries(queryKey);
+      queryClient.removeQueries(queryKey);
+    };
+  }, []);
 
   useEffect(() => {
     // 추후에 조건 풀 지 확인해보기
@@ -97,14 +121,25 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
   return (
     <div>
       <ProductListWrap>
-        {isFetching && <Loading />}
+        {isLoading && (
+          <CardWrap isLoading={isLoading}>
+            {[...Array(6)].map((_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </CardWrap>
+        )}
         {productList && productList.length > 0 ? (
           <>
             <CardWrap>
+              {!isLoading && isFetching && <Loading />}
               {productList.map((product, index) => (
                 <Card
                   key={index}
-                  ref={index === productList.length - 1 ? lastProductRef : null}
+                  ref={
+                    index === productList.length - 1
+                      ? lastProductRef
+                      : undefined
+                  }
                   onClick={() => navigate(`/web/product/${product.id}`)}>
                   <CardImg src={product.imgUrls[0]} alt={product.title} />
                   <ProductBadge>{product.location}</ProductBadge>
@@ -116,7 +151,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
             <TopButton
               className="btn btn-neutral"
               show={showTopButton}
-              onClick={isFetching ? () => {} : scrollToTop}>
+              onClick={isFetching || isLoading ? () => {} : scrollToTop}>
               TOP
             </TopButton>
           </>
@@ -145,6 +180,12 @@ const CardWrap = styled.div`
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 30px;
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      filter: grayscale(100%);
+    `}
 `;
 
 const Card = styled.div`
@@ -153,6 +194,14 @@ const Card = styled.div`
   padding: 10px;
   box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      opacity: 0.5;
+      filter: grayscale(100%);
+      backgroundcolor: "#f0f0f0";
+    `}
 `;
 
 const CardImg = styled.img`
@@ -161,6 +210,12 @@ const CardImg = styled.img`
   background-size: cover;
   border-radius: 12px;
   margin-bottom: 5px;
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      background-color: rgba(0, 0, 0, 0.2);
+    `}
 `;
 
 const ProductBadge = styled.div`
@@ -174,16 +229,39 @@ const ProductBadge = styled.div`
   justify-content: center;
   border-radius: 8px;
   margin: 10px 0 0 0;
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      width: 50px;
+      background-color: rgba(0, 0, 0, 0.2);
+    `}
 `;
 
 const ProductPrice = styled.div`
   font-size: 14px;
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      width: 50px;
+      height: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+    `}
 `;
 
 const ProductTitle = styled.h1`
   font-size: 16px;
   font-weight: 700;
   margin: 5px 0;
+
+  ${(props) =>
+    props.isLoading &&
+    css`
+      width: 70px;
+      height: 20px;
+      background-color: rgba(0, 0, 0, 0.2);
+    `}
 `;
 
 const NoticeMsg = styled.p`
