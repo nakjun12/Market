@@ -32,22 +32,15 @@ export const LoginForm = () => {
       }
     };
 
-    const customContent = (
-      <>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            로그인에 {process ? "성공" : "실패"} 했습니다.
-          </h3>
-          <p className="py-4">{message}</p>
-          <div className="modal-action">
-            <button className="btn" onClick={handleConfirm}>
-              확인
-            </button>
-          </div>
-        </div>
-      </>
-    );
-    openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
+    openModal({
+      modalType: "default",
+      modalProps: {
+        title: `로그인에 ${process ? "성공" : "실패"} 했습니다.`,
+        message,
+        confirmText: "확인",
+        onConfirm: handleConfirm
+      }
+    }); // 백드롭 클릭으로 팝업을 닫습니다.
   };
 
   const handleSubmit = async (event) => {

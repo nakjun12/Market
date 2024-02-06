@@ -16,26 +16,15 @@ export default function ProductDetailPage() {
   const openDialog = () => setIsDialogOpen(true);
   const closeDialog = () => setIsDialogOpen(false);
   const openCustomPopup = ({ process }) => {
-    const customContent = (
-      <div>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">
-            가입에 {process ? "성공" : "실패"} 했습니다.
-          </h3>
-          {process ? (
-            <p className="py-4">
-              확인 버튼 클릭으로 로그인 페이지로 이동합니다.
-            </p>
-          ) : (
-            <p className="py-4">다시 시도해 주시기 바랍니다.</p>
-          )}
-          <div className="modal-action">
-            <button className="btn">확인</button>
-          </div>
-        </div>
-      </div>
-    );
-    openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
+    openModal({
+      modalType: "anotherModalType",
+      modalProps: {
+        title: `장바구니에 저장했습니다.`,
+        message: "",
+        confirmText: "확인",
+        onConfirm: closeModal
+      }
+    }); // 백드롭 클릭으로 팝업을 닫습니다.
   };
   return (
     <div className="max-w-sm mx-auto relative">
