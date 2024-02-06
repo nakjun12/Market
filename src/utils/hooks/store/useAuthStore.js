@@ -3,8 +3,8 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 // 로그아웃 사용법
-// const auth = useAuthStore();
-// <div onClick={auth.logout}>Logout</div>
+// const { logout } = useAuthStore();
+// <div onClick={() => logout()}>Logout</div>
 
 const useAuthStore = create(
   devtools((set) => ({
