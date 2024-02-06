@@ -1,13 +1,26 @@
+import { getPublishedPosts } from "@/api/marketApi";
 import Loading from "@/components/Loading";
 import useModalStore from "@/utils/hooks/store/useModalStore";
-import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // 상품 리스트를 보여주는 공용 컴포넌트
-const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
+const ProductList = ({ param, queryKey }) => {
+  const [productList, setProductList] = useState([]);
+  const getProductList = async ({ pageParam = 1 }) => {
+    // pageParam : useInfiniteQuery의 getNextPageParam에서 반환해준 값 (=다음 불러올 페이지)
+    const resData = await getPublishedPosts(param);
+
+    const { page, lastPage, data: responseData } = resData.data;
+    setProductList((prevList) => [...prevList, ...responseData]);
+
+    // return은 아래 useInfiniteQuery에서 getNextPageParam으로 전달
+    // page 뜻을 전달하기 위해 이름 curPage로 전달
+    return { curPage: page, lastPage };
+  };
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showTopButton, setShowTopButton] = useState(false); // "맨 위로 가기" 버튼의 표시 여부를 제어하는 상태
@@ -22,7 +35,6 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
         // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
         // 여기서 return 하는 값은 pageParam으로 전달 됨
         return curPage < lastPage ? curPage + 1 : null;
-        ㅉ;
       }
     });
 
@@ -89,7 +101,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
         window.removeEventListener("scroll", handleTop);
       };
     }
-  }, [keyword]);
+  }, [param.keyword]);
 
   useEffect(() => {
     return () => {
@@ -159,7 +171,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
           <div>
             {!productList?.length && !isFetching && (
               <NoticeMsg>
-                {`${keyword ? "검색 결과가" : "상품이"} 없습니다.`}
+                {`${param.keyword ? "검색 결과가" : "상품이"} 없습니다.`}
               </NoticeMsg>
             )}
           </div>

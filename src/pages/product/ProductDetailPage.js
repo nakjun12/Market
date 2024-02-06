@@ -1,7 +1,8 @@
 import { getPostById } from "@/api/marketApi";
 import ProductImageCarousel from "@/components/carousel/ProductImageCarousel";
 import useModalStore from "@/utils/hooks/store/useModalStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const images = [
   "https://i.pinimg.com/550x/a9/f1/2a/a9f12ad9bfe0baa4f6e629d1e0fa439c.jpg",
@@ -11,9 +12,20 @@ const images = [
 
 export default function ProductDetailPage() {
   const { openModal } = useModalStore();
+  const { productid } = useParams();
+  const [product, setProduct] = useState({});
+
+  console.log(productid, "id");
   useEffect(() => {
-    console.log(getPostById(1).then((e) => console.log(e)));
+    getPostById(productid).then((e) => {
+      console.log(e.data);
+      setProduct(e.data);
+    });
   }, []);
+  const { title, price, content, imgUrls = [], location } = product;
+
+  console.log(imgUrls, "imgUrls");
+
   const openCustomPopup = ({ process }) => {
     const customContent = (
       <div>
@@ -29,23 +41,23 @@ export default function ProductDetailPage() {
   };
   return (
     <div className="max-w-sm mx-auto relative">
-      <ProductImageCarousel images={images} />
+      <ProductImageCarousel images={imgUrls} />
       <div className="px-4 py-2"></div>
       <div className="px-4 py-2">
         <div className="flex items-center justify-between">
           <div>
-            <div className="font-bold text-lg">WINIA Air Washer</div>
-            <div className="text-gray-500 text-sm">Used - Like new</div>
+            <div className="font-bold text-lg">{title}</div>
+            <div className="text-gray-500 text-sm">{location}</div>
           </div>
-          <div className="text-lg">30,000₩</div>
+          <div className="text-lg">{price}₩</div>
         </div>
         <div className="mt-2">
-          <p className="text-sm">me.</p>
+          <p className="text-sm">{content}</p>
         </div>
         <button
           onClick={openCustomPopup}
           className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full mt-4 bg-orange-400 text-white">
-          Contact seller
+          장바구니에 넣기
         </button>
       </div>
       <div className="px-4 py-2">

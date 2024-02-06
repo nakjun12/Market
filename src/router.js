@@ -3,14 +3,13 @@ import Header from "@/components/header";
 import NotFoundPage from "@/pages/NotFoundPage";
 import ProductsPage from "@/pages/product/ProductsPage";
 import { ROUTES } from "@/utils/constants/routePaths";
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import { JoinPage } from "./pages/join/JoinPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
-import ProductsSearchPage from "./pages/product/ProductsSearchPage";
 import ProductSearchResultPage from "./pages/product/ProductSearchResultPage";
+import ProductsSearchPage from "./pages/product/ProductsSearchPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
-import { Navigate } from "react-router-dom";
 import useAuthStore from "./utils/hooks/store/useAuthStore";
 
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
@@ -24,7 +23,7 @@ export const routeConfig = [
   // 홈 페이지 경로, ProductPage 컴포넌트를 렌더링합니다.
   // `index: true`는 이 라우트가 자식 라우트보다 우선순위가 높음을 나타냅니다.
   { path: ROUTES.HOME, element: <ProductsPage />, index: true },
-  { path: ROUTES.PRODUCT, element: <ProductDetailPage /> },
+  { path: ROUTES.PRODUCT, element: <ProductDetailPage />, authRequire: false },
   { path: ROUTES.SEARCH, element: <ProductsSearchPage /> },
   { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
