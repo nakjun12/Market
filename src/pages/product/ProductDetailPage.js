@@ -55,52 +55,18 @@ export default function ProductDetailPage() {
           장바구니에 넣기
         </button>
       </div>
-      <div className="px-4 py-2">
-        <div className="font-bold text-lg mb-2">Similar items</div>
-        <div className="grid grid-cols-2 gap-4">
-          <div
-            className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
-            data-v0-t="card">
-            <div className="flex flex-col space-y-1.5 p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight">
-                Wooden Chair
-              </h3>
-              <p className="text-sm text-muted-foreground">25,000₩ - Used</p>
-            </div>
-          </div>
-          <div
-            className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
-            data-v0-t="card">
-            <div className="flex flex-col space-y-1.5 p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight">
-                Fur Slippers
-              </h3>
-              <p className="text-sm text-muted-foreground">7,000₩ - New</p>
-            </div>
-          </div>
-          <div
-            className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
-            data-v0-t="card">
-            <div className="flex flex-col space-y-1.5 p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight">
-                Red Backpack
-              </h3>
-              <p className="text-sm text-muted-foreground">10,000₩ - Used</p>
-            </div>
-          </div>
-          <div
-            className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
-            data-v0-t="card">
-            <div className="flex flex-col space-y-1.5 p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight">
-                Glass Bowl
-              </h3>
-              <p className="text-sm text-muted-foreground">10,000₩ - Used</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-between px-4 py-2 text-xs text-gray-500"></div>
+      <ProductsListComponent
+        title="이 상품을 본 사람들이 함께 본 상품"
+        param={{
+          page: 2, // 1 페이지가 아니면 nextPage(현재+1 된 값)을 호출
+          limit: 20,
+          query: "",
+          orderBy: "createdAt",
+          direction: "asc"
+        }}
+        apiCallback={getPublishedPosts}
+        queryKey={[`ProductList_${productid}`]}
+      />
     </div>
   );
 }
