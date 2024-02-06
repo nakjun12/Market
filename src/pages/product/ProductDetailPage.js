@@ -1,14 +1,9 @@
-import { getPostById } from "@/api/marketApi";
+import { getPostById, getPublishedPosts } from "@/api/marketApi";
 import ProductImageCarousel from "@/components/carousel/ProductImageCarousel";
 import useModalStore from "@/utils/hooks/store/useModalStore";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-const images = [
-  "https://i.pinimg.com/550x/a9/f1/2a/a9f12ad9bfe0baa4f6e629d1e0fa439c.jpg",
-  "https://species.nibr.go.kr/UPLOAD/digital/species/12000009/120000095823/BIMGMM0000386036_20221116112438319509.jpg",
-  "https://mblogthumb-phinf.pstatic.net/MjAxODAyMDJfMTcx/MDAxNTE3NTUxOTIxNDcz.4p7O7MZoKYKwd9FSAVZBdJQEayDerw9nzUCPKNzfSL4g.Cx4zwz5E5GiYeUS1EGelbBU4Z2gPj9jn0ZjCQxD55gsg.JPEG.phjphk12/image_3575628891517551874701.jpg?type=w800"
-];
+import ProductsListComponent from "./components/ProductListComponent";
 
 export default function ProductDetailPage() {
   const { openModal } = useModalStore();
