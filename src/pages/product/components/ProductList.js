@@ -22,7 +22,6 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
         // 마지막 페이지인 경우에는 더 이상 호출 불필요 , 마지막 페이지보다 전이면 +1 해준다
         // 여기서 return 하는 값은 pageParam으로 전달 됨
         return curPage < lastPage ? curPage + 1 : null;
-        ㅉ;
       }
     });
 
