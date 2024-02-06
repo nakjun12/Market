@@ -27,7 +27,6 @@ export default ImageSwiperSlide;
 const containerStyle = css`
   width: 100%; // 컨테이너 너비를 100%로 설정
   padding-top: 56.25%; // 16:9 비율의 높이를 설정
-  min-height: 200px; // 이미지 높이를 100%로 설정
   position: relative; // 자식 요소를 절대 위치로 배치하기 위한 상대 위치 설정
 `;
 
