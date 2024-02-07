@@ -27,40 +27,47 @@ marketApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    // 리프레시 토큰 요청에서의 401 오류인지 확인
-    const isRefreshTokenRequest = originalRequest.url === "/auth/refresh-token";
+    const isRefreshTokenRequest = originalRequest.url.includes(
+      "/auth/refresh-token"
+    );
 
-    // 401 인증에러 + 재요청이 아닐때 + refreshToken에 대한 요청이 아닐 떄
-    // 즉 액세스 토큰이 만료되어 거절될 떄 재발급 절차
-    if (
-      error.response.status === 401 &&
-      !originalRequest._retry &&
-      !isRefreshTokenRequest
-    ) {
+    // 리프레시 토큰 요청에서 401 오류가 발생한 경우 토큰 만료등 일반적인 이유
+    if (isRefreshTokenRequest && error.response?.status === 401) {
+      useAuthStore.getState().logout();
+      return Promise.reject(error); // 여기서 얼리 리턴
+    }
+
+    // 다른 요청에서 401 오류 처리 (엑세스 토큰의 만료)
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // 무한 재요청 방지를 위한 트리거
       originalRequest._retry = true;
-      try {
-        const refreshData = await marketApi.post("/auth/refresh-token");
-        useAuthStore.getState().setAccessToken(refreshData.data?.accessToken);
-        originalRequest.headers["Authorization"] =
-          `Bearer ${refreshData.data?.accessToken}`;
-        const userData = await marketApi.get("/users/me", {
-          requiresAuth: true
-        });
-        useAuthStore.getState().setUser({
-          id: userData.data?.id,
-          userName: userData.data?.username
-        });
-        return marketApi(originalRequest);
-      } catch (refreshError) {
-        // 리프레시 토큰 요청 실패 시 로그아웃 처리
-        console.error("인증 정보 만료");
-        useAuthStore.getState().logout();
-        return Promise.reject(refreshError);
+      const newAccessToken = await refreshAccessTokenAndFetchUser();
+      if (newAccessToken) {
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        return marketApi(originalRequest); // 재요청
       }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(error); // 다른 모든 에러는 여기서 처리
   }
 );
+
+// 리프래쉬 토큰에 대한 예외 처리 함수
+async function refreshAccessTokenAndFetchUser() {
+  try {
+    const { data } = await marketApi.post("/auth/refresh-token");
+    if (data.accessToken) {
+      useAuthStore.getState().setAccessToken(data.accessToken);
+      return data.accessToken;
+    }
+  } catch (error) {
+    if (error.response?.status !== 401) {
+      console.error("인증 정보 갱신 실패");
+    }
+    useAuthStore.getState().logout();
+    return null;
+  }
+}
 
 /**
  * 사용자 (user)에 관련된 정보를 이용한 api입니다.
