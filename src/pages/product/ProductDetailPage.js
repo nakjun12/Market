@@ -1,22 +1,18 @@
-import { getPostById, getPublishedPosts } from "@/api/marketApi";
+import { getPublishedPosts } from "@/api/marketApi";
 import ProductImageCarousel from "@/components/carousel/ProductImageCarousel";
 import useModalStore from "@/utils/hooks/store/useModalStore";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import ProductsListComponent from "./components/ProductListComponent";
 
 export default function ProductDetailPage() {
   const { openModal } = useModalStore();
+  const loaderData = useLoaderData();
+  console.log(loaderData, "loaderData");
   const { productid } = useParams();
-  const [product, setProduct] = useState({});
+  const product = loaderData;
 
   console.log(productid, "id");
-  useEffect(() => {
-    getPostById(productid).then((e) => {
-      console.log(e.data);
-      setProduct(e.data);
-    });
-  }, []);
+
   const { title, price, content, imgUrls = [], location } = product;
 
   console.log(imgUrls, "imgUrls");
@@ -35,7 +31,7 @@ export default function ProductDetailPage() {
     openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
   };
   return (
-    <div className="max-w-sm mx-auto relative">
+    <div className="max-w-md mx-auto relative">
       <ProductImageCarousel images={imgUrls} />
       <div className="px-4 py-2"></div>
       <div className="px-4 py-2">
