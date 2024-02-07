@@ -11,33 +11,28 @@ export const JoinForm = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: postAuthSignup,
     onSuccess: () => {
-      openCustomPopup({
+      navigate(ROUTES.HOME);
+      return openCustomPopup({
         process: true,
-        message: "가입에 성공했습니다. 확인으로 메인페이지로 이동합니다."
+        message: "가입에 성공했습니다."
       });
     },
     onError: (error) => {
-      openCustomPopup({ process: false, message: error.response.data.message });
+      return openCustomPopup({
+        process: false,
+        message: error.response.data.message
+      });
     }
   });
 
   const openCustomPopup = ({ process, message }) => {
-    const handleConfirm = () => {
-      // 성공 실패시
-      if (process) {
-        navigate(ROUTES.HOME);
-      } else {
-        closeModal();
-      }
-    };
-
     openModal({
       modalType: "default",
       modalProps: {
         title: `가입에 ${process ? "성공" : "실패"} 했습니다.`,
         message,
         confirmText: "확인",
-        onConfirm: handleConfirm
+        onConfirm: closeModal()
       }
     });
   };

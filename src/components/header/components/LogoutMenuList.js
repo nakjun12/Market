@@ -1,3 +1,4 @@
+import { getUserMe } from "@/api/marketApi";
 import { ROUTES } from "@/utils/constants/routePaths";
 import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
@@ -29,6 +30,9 @@ export const LogoutMenuList = () => {
         </li>
         <li onClick={() => logout()}>
           <div>Logout</div>
+        </li>
+        <li onClick={() => getUserMe()}>
+          <div>Me</div>
         </li>
       </ul>
     </div>
