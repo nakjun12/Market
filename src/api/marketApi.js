@@ -27,12 +27,12 @@ marketApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     // 401에러의 경우 (인증 에러)
+
     if (error.response?.status === 401) {
+      const originalRequest = error.config;
       const isRefreshTokenRequest = originalRequest.url.includes(
         "/auth/refresh-token"
       );
-      const originalRequest = error.config;
-
       // Refresh token 에러 (만료 혹은 없거나 비적합)
       if (isRefreshTokenRequest) {
         useAuthStore.getState().logout();
@@ -115,8 +115,8 @@ export const getUserMe = async () => {
 };
 
 // 유저 정보 업데이트
-export const updateUser = async (name) => {
-  return await marketApi.put("/users/update", name, { requiresAuth: true });
+export const updateUser = async (data) => {
+  return await marketApi.put("/users/update", data, { requiresAuth: true });
 };
 
 // 유저 비밀번호 변경

@@ -15,7 +15,11 @@ const useAuthStore = create(
     email: null,
     setAccessToken: (token) =>
       set({ accessToken: token, isAuthenticated: true }),
-    setUser: ({ id, userName, email }) => set({ id, userName, email }),
+    setUser: (newValues) =>
+      set((state) => ({
+        ...state, // 현재 상태를 유지
+        ...newValues // 새로운 값으로 업데이트, 이 경우 userName만 업데이트하려는 경우에는 { userName: "새로운 값" }을 전달
+      })),
     logout: async () => {
       try {
         // 서버의 로그아웃 엔드포인트에 요청
