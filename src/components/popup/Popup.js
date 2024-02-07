@@ -1,6 +1,6 @@
 // Popup.js
+import { Global, css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 /**
@@ -17,24 +17,22 @@ import { createPortal } from "react-dom";
  * @returns {JSX.Element|null} 팝업 컴포넌트.
  */
 const Popup = ({ isOpen, closePopup, children }) => {
-  useEffect(() => {
-    const body = document.body;
-    // 팝업이 열려 있을 때 body 스크롤을 막습니다.
-    if (isOpen) {
-      body.style.overflow = "hidden"; // 스크롤 방지
-    }
-    return () => {
-      // 컴포넌트가 언마운트될 때 스크롤을 다시 허용합니다.
-      body.style.overflow = "visible"; // 스크롤 허용
-    };
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
-  return createPortal(
-    // 팝업 배경을 클릭하면 팝업을 닫습니다.
-    <PopupBackdrop onClick={closePopup}>{children}</PopupBackdrop>,
-    document.getElementById("popup-root") // 팝업을 렌더링할 DOM 노드를 지정합니다.
+  return (
+    <>
+      <Global
+        styles={css`
+          body {
+            overflow: hidden; // 스크롤 방지
+          }
+        `}
+      />
+      {createPortal(
+        <PopupBackdrop onClick={closePopup}>{children}</PopupBackdrop>,
+        document.getElementById("popup-root") // 팝업을 렌더링할 DOM 노드를 지정합니다.
+      )}
+    </>
   );
 };
 
