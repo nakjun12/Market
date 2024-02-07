@@ -26,26 +26,28 @@ marketApi.interceptors.request.use(
 marketApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    const isRefreshTokenRequest = originalRequest.url.includes(
-      "/auth/refresh-token"
-    );
-    const isAuthenticatedError = error.response?.status === 401;
+    // 401에러의 경우 (인증 에러)
+    if (error.response?.status === 401) {
+      const isRefreshTokenRequest = originalRequest.url.includes(
+        "/auth/refresh-token"
+      );
+      const originalRequest = error.config;
 
-    // 401에러 + Refresh token 에러 (만료 혹은 없거나 비적합)
-    if (isAuthenticatedError && isRefreshTokenRequest) {
-      useAuthStore.getState().logout();
-      return Promise.reject(error);
-    }
+      // Refresh token 에러 (만료 혹은 없거나 비적합)
+      if (isRefreshTokenRequest) {
+        useAuthStore.getState().logout();
+        return Promise.reject(error);
+      }
 
-    // 401에러 + 재시도이지 않은 에러
-    if (isAuthenticatedError && !originalRequest._retry) {
-      // 무한 재요청 방지를 위한 트리거
-      originalRequest._retry = true;
-      const newAccessToken = await refreshAccessTokenAndFetchUser();
-      if (newAccessToken) {
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        return marketApi(originalRequest); // 재요청
+      // 재시도이지 않은 에러
+      if (!originalRequest._retry) {
+        // 무한 재요청 방지를 위한 트리거
+        originalRequest._retry = true;
+        const newAccessToken = await refreshAccessTokenAndFetchUser();
+        if (newAccessToken) {
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          return marketApi(originalRequest); // 재요청
+        }
       }
     }
 
