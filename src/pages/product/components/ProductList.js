@@ -73,8 +73,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
   );
 
   useEffect(() => {
-    // 초기 데이터 로딩
-
+    // 초기 스크롤 이벤트 설정
     const handleTop = () => {
       // 스크롤이 제일 상단에 가면 top 버튼 안 보이게 처리
       const isTop = window.scrollY === 0;
@@ -88,7 +87,7 @@ const ProductList = ({ getProductList, productList, keyword, queryKey }) => {
         window.removeEventListener("scroll", handleTop);
       };
     }
-  }, [keyword]);
+  }, [isLoading]);
 
   useEffect(() => {
     return () => {
