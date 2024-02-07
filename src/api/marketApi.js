@@ -30,15 +30,16 @@ marketApi.interceptors.response.use(
     const isRefreshTokenRequest = originalRequest.url.includes(
       "/auth/refresh-token"
     );
+    const isAuthenticatedError = error.response?.status === 401;
 
-    // 리프레시 토큰 요청에서 401 오류가 발생한 경우 토큰 만료등 일반적인 이유
-    if (isRefreshTokenRequest && error.response?.status === 401) {
+    // 401에러 + Refresh token 에러 (만료 혹은 없거나 비적합)
+    if (isAuthenticatedError && isRefreshTokenRequest) {
       useAuthStore.getState().logout();
-      return Promise.reject(error); // 여기서 얼리 리턴
+      return Promise.reject(error);
     }
 
-    // 다른 요청에서 401 오류 처리 (엑세스 토큰의 만료)
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // 401에러 + 재시도이지 않은 에러
+    if (isAuthenticatedError && !originalRequest._retry) {
       // 무한 재요청 방지를 위한 트리거
       originalRequest._retry = true;
       const newAccessToken = await refreshAccessTokenAndFetchUser();
@@ -52,7 +53,7 @@ marketApi.interceptors.response.use(
   }
 );
 
-// 리프래쉬 토큰에 대한 예외 처리 함수
+// 리프래쉬 토큰에 대한 함수
 async function refreshAccessTokenAndFetchUser() {
   try {
     const { data } = await marketApi.post("/auth/refresh-token");
@@ -62,7 +63,8 @@ async function refreshAccessTokenAndFetchUser() {
     }
   } catch (error) {
     if (error.response?.status !== 401) {
-      console.error("인증 정보 갱신 실패");
+      // 401 만료 이외에 통신 자체 에러일 경우 에러표출
+      console.error(error);
     }
     useAuthStore.getState().logout();
     return null;
