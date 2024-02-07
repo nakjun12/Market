@@ -3,12 +3,15 @@ import Header from "@/components/header";
 import NotFoundPage from "@/pages/NotFoundPage";
 import ProductsPage from "@/pages/product/ProductsPage";
 import { ROUTES } from "@/utils/constants/routePaths";
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
+import { productLoader } from "./api/loader/productLoader";
 import { JoinPage } from "./pages/join/JoinPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import ProductDetailPage from "./pages/product/ProductDetailPage";
-import ProductsSearchPage from "./pages/product/ProductsSearchPage";
 import ProductSearchResultPage from "./pages/product/ProductSearchResultPage";
+import ProductsSearchPage from "./pages/product/ProductsSearchPage";
+import { ProfilePage } from "./pages/profile/ProfilePage";
+import useAuthStore from "./utils/hooks/store/useAuthStore";
 
 // 코드 스플리팅을 위해 React.lazy를 사용하는 주석 처리된 예시입니다.
 // 현재는 직접 임포트를 사용하고 있지만, 나중에 필요시 아래의 코드로 대체할 수 있습니다.
@@ -21,16 +24,33 @@ export const routeConfig = [
   // 홈 페이지 경로, ProductPage 컴포넌트를 렌더링합니다.
   // `index: true`는 이 라우트가 자식 라우트보다 우선순위가 높음을 나타냅니다.
   { path: ROUTES.HOME, element: <ProductsPage />, index: true },
-  { path: ROUTES.PRODUCT, element: <ProductDetailPage /> },
+  {
+    path: ROUTES.PRODUCT,
+    element: <ProductDetailPage />,
+    loader: productLoader
+  },
   { path: ROUTES.SEARCH, element: <ProductsSearchPage /> },
   { path: ROUTES.SEARCH_RESULT, element: <ProductSearchResultPage /> },
   { path: ROUTES.LOGIN, element: <LoginPage /> },
   { path: ROUTES.JOIN, element: <JoinPage /> },
+  // 인증이 필요한 사이트인 경우 authRequire를 추가
+  { path: ROUTES.PROFILE, element: <ProfilePage />, authRequire: true },
 
   // 404 Not Found 페이지 경로, NotFoundPage 컴포넌트를 렌더링합니다.
   // 와일드카드('*') 경로를 사용하여 예상치 못한 모든 경로에서 NotFoundPage를 띄웁니다.
   { path: ROUTES.NOT_FOUND, element: <NotFoundPage /> }
 ];
+
+// 하단 인증 Wrap (비인증 유저의 인증페이지 접근 시 home으로 이동)
+const RequireAuth = ({ children }) => {
+  const { isAuthenticated } = useAuthStore();
+
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+
+  return children;
+};
 
 /**
  * 라우터 설정을 생성합니다. 이 설정은 앱 전체의 페이지 라우팅 구조를 정의합니다.
@@ -44,7 +64,14 @@ export const routers = createBrowserRouter([
     label: "WithLayoutPage",
     element: <WithLayout />,
     // errorElement: <Empty />, // 에러 발생 시 보여줄 컴포넌트 (옵션)
-    children: routeConfig // WithLayout 컴포넌트를 감싸는 하위 페이지 라우트
+    children: routeConfig.map((route) => ({
+      ...route,
+      element: route.authRequire ? (
+        <RequireAuth>{route.element}</RequireAuth>
+      ) : (
+        route.element
+      )
+    }))
   },
   {
     // 부모 라우트의 path가 "/web/test"이므로,

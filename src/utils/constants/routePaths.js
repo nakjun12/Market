@@ -13,11 +13,11 @@
  */
 export const ROUTES = {
   HOME: "/web", // 홈페이지 라우트
-  LOGIN: "login", // 로그인 페이지 라우트
+  LOGIN: "/web/login", // 로그인 페이지 라우트 절대경로로 수정 (/web/xxx/login으로 이동되는문제)
   JOIN: "join", // 회원가입 페이지 라우트
   PRODUCT: "product/:productid", // 개별 제품 상세 페이지 라우트 (동적 파라미터)
   PRODUCTS: "products", // 제품 목록 페이지 라우트
-  MYPAGE: "mypage", // 사용자 마이페이지 라우트
+  PROFILE: "profile", // 사용자 마이페이지 라우트
   BASKET: "basket", // 장바구니 페이지 라우트
   TEST_COUNTER: "test/counter", // 테스트용 카운터 페이지 라우트
   ALL_PRODUCTS: "products/all", // 모든 제품 목록 페이지 라우트

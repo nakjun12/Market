@@ -26,38 +26,59 @@ marketApi.interceptors.request.use(
 marketApi.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    // 리프레시 토큰 요청에서의 401 오류인지 확인
-    const isRefreshTokenRequest = originalRequest.url === "/auth/refresh-token";
+    // 401에러의 경우 (인증 에러)
+    if (error.response?.status === 401) {
+      const isRefreshTokenRequest = originalRequest.url.includes(
+        "/auth/refresh-token"
+      );
+      const originalRequest = error.config;
 
-    // 401 인증에러 + 재요청이 아닐때 + refreshToken에 대한 요청이 아닐 떄
-    if (
-      error.response.status === 401 &&
-      !originalRequest._retry &&
-      !isRefreshTokenRequest
-    ) {
-      originalRequest._retry = true;
-      try {
-        const { data } = await marketApi.post("/auth/refresh-token");
-        useAuthStore.getState().setAccessToken(data.accessToken);
-        originalRequest.headers["Authorization"] = `Bearer ${data.accessToken}`;
-        return marketApi(originalRequest);
-      } catch (refreshError) {
-        // 리프레시 토큰 요청 실패 시 로그아웃 처리
+      // Refresh token 에러 (만료 혹은 없거나 비적합)
+      if (isRefreshTokenRequest) {
         useAuthStore.getState().logout();
-        return Promise.reject(refreshError);
+        return Promise.reject(error);
+      }
+
+      // 재시도이지 않은 에러
+      if (!originalRequest._retry) {
+        // 무한 재요청 방지를 위한 트리거
+        originalRequest._retry = true;
+        const newAccessToken = await refreshAccessTokenAndFetchUser();
+        if (newAccessToken) {
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+          return marketApi(originalRequest); // 재요청
+        }
       }
     }
-    return Promise.reject(error);
+
+    return Promise.reject(error); // 다른 모든 에러는 여기서 처리
   }
 );
+
+// 리프래쉬 토큰에 대한 함수
+async function refreshAccessTokenAndFetchUser() {
+  try {
+    const { data } = await marketApi.post("/auth/refresh-token");
+    if (data.accessToken) {
+      useAuthStore.getState().setAccessToken(data.accessToken);
+      return data.accessToken;
+    }
+  } catch (error) {
+    if (error.response?.status !== 401) {
+      // 401 만료 이외에 통신 자체 에러일 경우 에러표출
+      console.error(error);
+    }
+    useAuthStore.getState().logout();
+    return null;
+  }
+}
 
 /**
  * 사용자 (user)에 관련된 정보를 이용한 api입니다.
  *
  */
 
-// 인증이 필요한 요청
+// 인증이 필요한 요청 (헤더 정보 주입)
 //const response = await marketApi.get('/protected-route', { requiresAuth: true });
 
 // 인증이 필요하지 않은 요청
@@ -88,21 +109,8 @@ export const postAuthLogin = async ({ email, password }) => {
   useAuthStore.getState().setAccessToken(response.data.accessToken);
   return response.data;
 };
-
-// 토큰 리프레쉬 (cookie의 refresh토큰 사용 없을 경우 401에러) 삭제예정
-export const postRefreshToken = async () => {
-  const response = marketApi.post("/auth/refresh-token");
-  useAuthStore.getState().setAccessToken(response.data.accessToken);
-  return await response.data;
-};
-
 //
-export const getAuthProfile = async () => {
-  return await marketApi.get("/auth/profile", { requiresAuth: true });
-};
-
-//내 정보 가져오기
-export const getUsersMe = async () => {
+export const getUserMe = async () => {
   return await marketApi.get("/users/me", { requiresAuth: true });
 };
 
@@ -153,8 +161,23 @@ export const getPostById = (id) => {
 };
 
 // 특정 사용자의 게시물 목록 가져오기
-export const getPostByUser = (userId) => {
-  return marketApi.get(`/posts/${userId}/posts`);
+export const getPostByUser = ({
+  page,
+  limit,
+  query,
+  orderBy,
+  direction,
+  userId
+}) => {
+  return marketApi.get(`/posts/${userId}/list`, {
+    params: {
+      page,
+      limit,
+      query,
+      orderBy,
+      direction
+    }
+  });
 };
 
 export default marketApi;

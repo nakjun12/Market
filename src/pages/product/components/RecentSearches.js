@@ -1,20 +1,26 @@
+import useAuthStore from "@/utils/hooks/store/useAuthStore";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import { getLocalStorage } from "@/pages/product/components/SaveSearchStorage";
+import { getCacheStorage } from "@/pages/product/components/SaveSearchStorage";
 
 // 검색 - 최근 검색어 목록 컴포넌트
 const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
+  const { isAuthenticated, id: loginId } = useAuthStore();
   const [recentSearches, setRecentSearches] = useState([]);
 
-  const handleClearRecentSearches = () => {
-    localStorage.removeItem("RecentSearches");
-    setRecentSearches([]);
-  };
-
   useEffect(() => {
-    const storedSearches =
-      JSON.parse(localStorage.getItem("RecentSearches")) || [];
+    let storedSearches = [];
+
+    try {
+      // 로컬 스토리지 사용할 수 없을 때 브라우저 캐시 사용
+      storedSearches = getLocalStorage(isAuthenticated, loginId);
+    } catch (error) {
+      storedSearches = getCacheStorage(isAuthenticated, loginId);
+    }
+
     setRecentSearches(storedSearches);
-  }, [searchTerm]);
+  }, [searchTerm, isAuthenticated, loginId]);
 
   return (
     <>
@@ -22,12 +28,12 @@ const RecentSearches = ({ searchTerm, handleSearchSubmit }) => {
         <RecentWrap>
           <ResentTitle>최근 검색어</ResentTitle>
           <div>
-            {recentSearches.map((search, index) => (
+            {recentSearches.map((word, index) => (
               <RecentWordBadge
                 className="badge badge-primary badge-md"
                 key={index}
-                onClick={() => handleSearchSubmit(search)}>
-                {search.length > 6 ? `${search.slice(0, 5)}..` : search}
+                onClick={() => handleSearchSubmit(word)}>
+                {word.length > 6 ? `${word.slice(0, 5)}..` : word}
               </RecentWordBadge>
             ))}
           </div>

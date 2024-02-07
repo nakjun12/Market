@@ -1,87 +1,31 @@
 // ProductSearchResult.js
 
 import styled from "@emotion/styled";
-import { getPublishedPosts } from "@/api/marketApi";
-import { useState } from "react";
-import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductList from "./components/ProductList";
+import { getPublishedPosts } from "@/api/marketApi";
+import { useState } from "react";
 
 const ProductSearchResultPage = () => {
   const { keyword } = useParams(); // 검색어
-  const [productList, setProductList] = useState(); // 넘겨줄 상품 리스트 배열
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const loaderRef = useRef(null);
+  const [productList, setProductList] = useState([]);
 
-  const fetchMoreData = async () => {
-    if (loading || !hasMore) return;
+  const getProductList = async ({ pageParam = 1 }) => {
+    // pageParam : useInfiniteQuery의 getNextPageParam에서 반환해준 값 (=다음 불러올 페이지)
+    const resData = await getPublishedPosts({
+      page: pageParam !== 1 ? pageParam : 1, // 1 페이지가 아니면 nextPage(현재+1 된 값)을 호출
+      limit: 20,
+      query: keyword ? keyword : "",
+      orderBy: "createdAt",
+      direction: "asc"
+    });
 
-    try {
-      setLoading(true);
-      const resData = await getPublishedPosts({
-        page: page !== 1 ? page + 1 : page,
-        limit: 16,
-        query: keyword ? keyword : "",
-        orderBy: "createdAt",
-        direction: "asc"
-      });
+    const { page, lastPage, data: responseData } = resData.data;
+    setProductList((prevList) => [...prevList, ...responseData]);
 
-      if (resData.data.data.length > 0) {
-        setProductList((prevList) => [...prevList, ...resData.data.data]);
-        setPage(page + 1);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error("데이터 추가 불러오기 실패:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    searchApi(keyword);
-  }, [keyword]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (loaderRef.current) {
-        const { scrollTop, clientHeight, scrollHeight } = loaderRef.current;
-
-        if (scrollHeight - scrollTop === clientHeight) {
-          fetchMoreData();
-        }
-      }
-    };
-
-    if (loaderRef.current) {
-      // 값이 없는 경우(null) 페이지 이동 시 에러 발생하기 때문에 null이 아닐때만 동작하도록 함
-      loaderRef.current.addEventListener("scroll", handleScroll);
-    }
-
-    return () => {
-      if (loaderRef.current) {
-        loaderRef.current.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [fetchMoreData]);
-
-  const searchApi = async (keyword) => {
-    try {
-      const resData = await getPublishedPosts({
-        page: 1,
-        limit: 10,
-        query: keyword ? keyword : "",
-        orderBy: "createdAt",
-        direction: "asc"
-      });
-
-      setProductList(resData.data.data);
-    } catch (error) {
-      console.error("검색 API 호출 실패:", error);
-    }
+    // return은 아래 useInfiniteQuery에서 getNextPageParam으로 전달
+    // page 뜻을 전달하기 위해 이름 curPage로 전달
+    return { curPage: page, lastPage };
   };
 
   return (
@@ -92,15 +36,11 @@ const ProductSearchResultPage = () => {
       </SearchResultText>
 
       <ProductList
+        getProductList={getProductList}
         productList={productList}
-        fetchMoreData={fetchMoreData}
-        loading={loading}
-        hasMore={hasMore}
+        keyword={keyword}
+        queryKey={["SearchProductList"]}
       />
-
-      {loading && <div>로딩 중...</div>}
-      {!loading && !hasMore && <div>더 이상 아이템이 없습니다.</div>}
-      <div ref={loaderRef}></div>
     </div>
   );
 };

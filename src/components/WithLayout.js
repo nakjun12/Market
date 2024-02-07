@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { SuspenseController } from "./SuspenseController";
 import Footer from "./footer";
 import Header from "./header";
+import { LocationObserver } from "@/utils/LocationObserver";
 
 const DelayedComponent = lazy(() =>
   SuspenseController(import("./SuspenseController"), 3000)
@@ -22,6 +23,7 @@ const Modal = lazy(() => import("./popup/Modal"));
 export default function WithLayout() {
   return (
     <div className="flex flex-col justify-between h-screen">
+      <LocationObserver />
       <Header />
       <Suspense fallback={<div>대기중</div>}>
         <Modal />

@@ -25,11 +25,11 @@ export const LoginMenuList = () => {
       <ul
         tabIndex={0}
         className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-        <li>
-          <div onClick={() => navigate(ROUTES.LOGIN)}>Login</div>
+        <li onClick={() => navigate(ROUTES.LOGIN)}>
+          <div>Login</div>
         </li>
-        <li>
-          <div onClick={() => navigate(ROUTES.JOIN)}>Join</div>
+        <li onClick={() => navigate(ROUTES.JOIN)}>
+          <div>Join</div>
         </li>
       </ul>
     </div>
