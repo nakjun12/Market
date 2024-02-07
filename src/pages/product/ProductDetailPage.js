@@ -18,17 +18,15 @@ export default function ProductDetailPage() {
   console.log(imgUrls, "imgUrls");
 
   const openCustomPopup = ({ process }) => {
-    const customContent = (
-      <div>
-        <div className="modal-box w-64">
-          <h3 className="font-bold text-lg">장바구니에 저장하였습니다.</h3>
-          <div className="modal-action">
-            <button className="btn">확인</button>
-          </div>
-        </div>
-      </div>
-    );
-    openModal(customContent); // 백드롭 클릭으로 팝업을 닫습니다.
+    openModal({
+      modalType: "anotherModalType",
+      modalProps: {
+        title: `장바구니에 저장했습니다.`,
+        message: "",
+        confirmText: "확인",
+        onConfirm: closeModal
+      }
+    }); // 백드롭 클릭으로 팝업을 닫습니다.
   };
   return (
     <div className="max-w-md mx-auto relative">

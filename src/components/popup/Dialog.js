@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, Global } from "@emotion/react";
 import { useEffect, useRef } from "react";
 
 /**
@@ -20,18 +20,10 @@ export default function Dialog({ isOpen, onBackdropClick = null, children }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
-    const body = document.body;
-
     if (isOpen) {
-      // 대화 상자를 모달로 표시합니다.
-      dialogRef.current.showModal();
-      // 스크롤을 방지하기 위해 body의 overflow를 hidden으로 설정합니다.
-      body.style.overflow = "hidden";
+      dialogRef.current?.showModal(); // 모달 열기
     } else {
-      // 대화 상자를 닫습니다.
-      dialogRef.current.close();
-      // 스크롤을 허용하기 위해 body의 overflow를 unset으로 설정합니다.
-      body.style.overflow = "unset";
+      dialogRef.current?.close(); // 모달 닫기
     }
 
     // 배경을 클릭했을 때 대화 상자를 닫는 이벤트 핸들러입니다.
@@ -56,9 +48,12 @@ export default function Dialog({ isOpen, onBackdropClick = null, children }) {
   }, [isOpen]);
 
   return (
-    <dialog ref={dialogRef} css={dialogStyle(isOpen)}>
-      {children}
-    </dialog>
+    <>
+      <Global styles={globalStyles(isOpen)} />
+      <dialog ref={dialogRef} css={dialogStyle}>
+        {children}
+      </dialog>
+    </>
   );
 }
 
@@ -75,6 +70,15 @@ const dialogStyle = (isOpen) => css`
     backdrop-filter: blur(4px);
   }
   /* 여기에 필요한 다른 dialog 스타일을 추가할 수 있습니다 */
+`;
+
+const globalStyles = (isOpen) => css`
+  ${isOpen &&
+  `
+    body {
+      overflow: hidden;
+    }
+  `}
 `;
 
 /**
