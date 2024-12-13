@@ -10,7 +10,7 @@ services:
     image: "pinemarket:0.1v"
     ports:
       - "8080:8080"
-    command: npm run preview
+    command: npm run dev
     networks:
       - pinemarket_api
 
